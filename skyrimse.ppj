@@ -29,7 +29,7 @@
         <!-- <Import>@ImportsFolder\FISSES\scripts\source</Import> -->
         <!-- <Import>@ImportsFolder\SkyUI_SDK\Scripts\Source</Import> -->
         <!-- <Import>@ImportsFolder\ConsoleUtil</Import> -->
-        <!-- <Import>@ImportsFolder\PapyrusExtender\source\scripts</Import> -->
+        <Import>@ImportsFolder\PapyrusExtender\source\scripts</Import>
 
         <!-- Change this to be your default Skyrim install directory's Scripts\Source path  -->
         <Import>C:\Steam\steamapps\common\Skyrim Special Edition\Data\Scripts\Source</Import>
