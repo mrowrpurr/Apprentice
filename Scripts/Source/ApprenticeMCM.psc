@@ -36,6 +36,10 @@ int property oid_TrainedSkills_Magic_Restoration_Toggle auto
 GlobalVariable property Apprentice_Training_Smithing auto
 int property oid_TrainedSkills_Smithing_Toggle auto
 
+; Block
+GlobalVariable property Apprentice_Training_Block auto
+int property oid_TrainedSkills_Block_Toggle auto
+
 event OnConfigInit()
     ModName = "Apprentice"
     Pages = new string[1]

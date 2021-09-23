@@ -13,6 +13,7 @@ function LeftColumn(ApprenticeMCM mcm) global
     Armor(mcm)
     Weapons(mcm)
     Smithing(mcm)
+    Blocking(mcm)
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
@@ -29,6 +30,11 @@ endFunction
 function Smithing(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Smithing")
     mcm.oid_TrainedSkills_Smithing_Toggle = mcm.AddToggleOption("Smithing", mcm.Apprentice_Training_Smithing.GetValueInt() == 1)
+endFunction
+
+function Blocking(ApprenticeMCM mcm) global
+    mcm.AddHeaderOption("Blocking")
+    mcm.oid_TrainedSkills_Block_Toggle = mcm.AddToggleOption("Blocking", mcm.Apprentice_Training_Block.GetValueInt() == 1)
 endFunction
 
 function MagicSkills(ApprenticeMCM mcm) global
@@ -72,7 +78,7 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle, true)
         endIf
 
-    ;
+    ; Smithing
     elseIf optionId == mcm.oid_TrainedSkills_Smithing_Toggle
         if mcm.Apprentice_Training_Smithing.GetValueInt() == 1
             mcm.Apprentice_Training_Smithing.SetValueInt(0)
@@ -80,6 +86,16 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         else
             mcm.Apprentice_Training_Smithing.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Smithing_Toggle, true)
+        endIf
+
+    ; Blocking
+    elseIf optionId == mcm.oid_TrainedSkills_Block_Toggle
+        if mcm.Apprentice_Training_Block.GetValueInt() == 1
+            mcm.Apprentice_Training_Block.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Block_Toggle, false)
+        else
+            mcm.Apprentice_Training_Block.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Block_Toggle, true)
         endIf
 
     ; Weapons

@@ -26,6 +26,9 @@ GlobalVariable property Apprentice_Training_Destruction auto
 ; Smithing
 GlobalVariable property Apprentice_Training_Smithing auto
 
+; Block
+GlobalVariable property Apprentice_Training_Block auto
+
 ; Note: For enchantments, we should only let you equip the item
 ;       if you are familiar with (aka trained in) the associated skill.
 
@@ -196,16 +199,21 @@ event OnObjectEquipped(Form object, ObjectReference instance)
 
     Armor theArmor = object as Armor
     if theArmor && IsArmor(theArmor)
-        if IsHeavyArmor(theArmor) && Apprentice_Training_HeavyArmor.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Heavy Armor.\n\nYou equip this armor until you get training in Heavy Armor.")
+        if theArmor.IsShield() && Apprentice_Training_Block.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Block.\n\nYou equip a shielf until you get training in Block.")
             GetActorReference().UnequipItem(theArmor)
-            GetActorReference().EquipItem(MostRecentlyWornArmor)
-        elseIf IsLightArmor(theArmor) && Apprentice_Training_LightArmor.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Light Armor.\n\nYou equip this armor until you get training in Light Armor.")
-            GetActorReference().UnequipItem(theArmor)
-            GetActorReference().EquipItem(MostRecentlyWornArmor)
-            ; Track it
-            MostRecentlyWornArmor = theArmor
+        else
+            if IsHeavyArmor(theArmor) && Apprentice_Training_HeavyArmor.GetValueInt() == 0
+                Debug.MessageBox("You are not trained in Heavy Armor.\n\nYou equip this armor until you get training in Heavy Armor.")
+                GetActorReference().UnequipItem(theArmor)
+                GetActorReference().EquipItem(MostRecentlyWornArmor)
+            elseIf IsLightArmor(theArmor) && Apprentice_Training_LightArmor.GetValueInt() == 0
+                Debug.MessageBox("You are not trained in Light Armor.\n\nYou equip this armor until you get training in Light Armor.")
+                GetActorReference().UnequipItem(theArmor)
+                GetActorReference().EquipItem(MostRecentlyWornArmor)
+                ; Track it
+                MostRecentlyWornArmor = theArmor
+            endIf
         endIf
     endIf
 endEvent
