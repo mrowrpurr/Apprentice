@@ -27,7 +27,7 @@
         <!-- <Import>@ImportsFolder\iWantWidgets\Source\Scripts</Import> -->
         <!-- <Import>@ImportsFolder\iWantStatusBars\Source\Scripts</Import> -->
         <!-- <Import>@ImportsFolder\FISSES\scripts\source</Import> -->
-        <!-- <Import>@ImportsFolder\SkyUI_SDK\Scripts\Source</Import> -->
+        <Import>@ImportsFolder\SkyUI_SDK\Scripts\Source</Import>
         <!-- <Import>@ImportsFolder\ConsoleUtil</Import> -->
         <Import>@ImportsFolder\PapyrusExtender\source\scripts</Import>
 

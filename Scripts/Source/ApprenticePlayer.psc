@@ -1,6 +1,18 @@
 Scriptname ApprenticePlayer extends ReferenceAlias  
 {This is the Apprentice player script.}
 
+; TODO - Add Smithing and don't allow using ANY SMITHING items if not trained in smithing yet
+
+GlobalVariable property Apprentice_Training_HeavyArmor auto
+GlobalVariable property Apprentice_Training_LightArmor auto
+GlobalVariable property Apprentice_Training_OneHanded auto
+GlobalVariable property Apprentice_Training_TwoHanded auto
+GlobalVariable property Apprentice_Training_Marksman auto
+GlobalVariable property Apprentice_Training_Restoration auto
+GlobalVariable property Apprentice_Training_Destruction auto
+GlobalVariable property Apprentice_Training_Alchemy auto
+GlobalVariable property Apprentice_Training_Enchanting auto
+
 ; Note: For enchantments, we should only let you equip the item
 ;       if you are familiar with (aka trained in) the associated skill.
 
@@ -80,7 +92,7 @@ endFunction
 
 event OnMenuOpen(string menuName)
     string description = UI.GetString("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.MenuDescription.text")
-    if ! IsTrainedIn_Alchemy && StringUtil.Find(description, "Alchemy") > -1
+    if Apprentice_Training_Alchemy.GetValueInt() != 1 && StringUtil.Find(description, "Alchemy") > -1
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         Input.TapKey(28) ; Enter
@@ -92,7 +104,7 @@ event OnMenuOpen(string menuName)
         Input.TapKey(28) ; Enter
         Utility.WaitMenuMode(0.1)
         Debug.MessageBox("You need to train in Alchemy before you can use an Alchemy table")
-    elseIf ! IsTrainedIn_Enchanting && StringUtil.Find(description, "Enchanting") > -1
+    elseIf Apprentice_Training_Enchanting.GetValueInt() != 1 && StringUtil.Find(description, "Enchanting") > -1
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         Utility.WaitMenuMode(0.1)
@@ -103,9 +115,11 @@ endEvent
 event OnSkillIncrease(string trainedSkill)
     if trainedSkill == "OneHanded"
         IsTrainedIn_OneHanded = true
+        ; Apprentice_Training_OneHanded
     elseIf trainedSkill == "TwoHanded"
         IsTrainedIn_TwoHanded = true
     elseIf trainedSkill  == "Marksman"
+        Apprentice_Training_Marksman.SetValueInt(1)
         IsTrainedIn_Marksman = true
     elseIf trainedSkill == "HeavyArmor"
         IsTrainedIn_HeavyArmor = true
@@ -141,7 +155,7 @@ event OnObjectEquipped(Form object, ObjectReference instance)
         elseIf skillName == "TwoHanded" && ! IsTrainedIn_TwoHanded
             Debug.MessageBox("You are not trained in Two-Handed weapons")
             player.UnequipItem(theWeapon)
-        elseIf skillName == "Marksman" && ! IsTrainedIn_Marksman
+        elseIf skillName == "Marksman" && ! Apprentice_Training_Marksman.GetValueInt() == 1
             Debug.MessageBox("You are not trained in Archery")
             player.UnequipItem(theWeapon)
         endIf
