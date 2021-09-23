@@ -204,8 +204,11 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
 endFunction
 
 function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
+    ; Settings
+    if optionId == mcm.oid_Settings_RestrictEnchantedItemUsage
+        mcm.SetInfoText("Toggle Restriction of Enchanted Item Usage (when enabled, you must be trained in the magic skill(s) of the associated item enchantment")
     ; Armor
-    if optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
+    elseIf optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
         mcm.SetInfoText("Toggle Training in Light Armor (required to equip light armor)")
     elseIf optionId == mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle
         mcm.SetInfoText("Toggle Training in Heavy Armor (required to equip heavy armor)")
