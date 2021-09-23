@@ -1,6 +1,7 @@
 scriptName ApprenticeMCM_TrainedSkills hidden
 
 function Render(ApprenticeMCM mcm, string page) global
+    mcm.SetTitleText("Trained Skills")
     mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
     LeftColumn(mcm)
     mcm.SetCursorPosition(1)
