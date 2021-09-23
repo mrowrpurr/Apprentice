@@ -48,22 +48,8 @@ function ListenForEvents()
     RegisterForMenu("Crafting Menu")
     RegisterForMenu("CraftingMenu")
     RegisterForMenu("InventoryMenu")
-
-    int jumpKey = Input.GetMappedKey("Jump")
-    RegisterForKey(jumpKey)
-
-    ; RegisterForMenu("Training Menu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
 endFunction
-
-event OnKeyDown(int keyCode)
-    Actor player = GetActorReference()
-    Form gold = Game.GetForm(0xf)
-    int goldCount = player.GetItemCount(gold)
-    if goldCount && Utility.RandomInt(1, 100) < 10
-        player.DropObject(gold, 1)
-    endIf
-endEvent
 
 event OnMenuClose(string menuName)
     if UnequipOnMenuClose
