@@ -39,6 +39,7 @@ function MagicSkills(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Magic Skills")
     mcm.oid_TrainedSkills_Magic_Alchemy_Toggle = mcm.AddToggleOption("Alchemy", mcm.Apprentice_Training_Alchemy.GetValueInt() == 1)
     mcm.oid_TrainedSkills_Magic_Enchanting_Toggle = mcm.AddToggleOption("Enchanting", mcm.Apprentice_Training_Enchanting.GetValueInt() == 1)
+    mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1)
 endFunction
 
 function Magic(ApprenticeMCM mcm) global
@@ -58,8 +59,18 @@ function Weapons(ApprenticeMCM mcm) global
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
+    ; Settings
+    if optionId == mcm.oid_Settings_RestrictEnchantedItemUsage
+        if mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1
+            mcm.Apprentice_Settings_RestrictEnchantedItemUsage.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_Settings_RestrictEnchantedItemUsage, false)
+        else
+            mcm.Apprentice_Settings_RestrictEnchantedItemUsage.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_Settings_RestrictEnchantedItemUsage, true)
+        endIf
+
     ; Armor
-    if optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
+    elseIf optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
         if mcm.Apprentice_Training_LightArmor.GetValueInt() == 1
             mcm.Apprentice_Training_LightArmor.SetValueInt(0)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Armor_LightArmor_Toggle, false)

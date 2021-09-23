@@ -18,6 +18,7 @@ endFunction
 GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
+GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
@@ -274,7 +275,7 @@ event OnObjectEquipped(Form object, ObjectReference instance)
     endIf
 
     ; Check for enchantment first
-    if theEnchantment
+    if theEnchantment && Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1
         if EnchantmentRequiresMagicSkill(theEnchantment, "Alteration") && Apprentice_Training_Alteration.GetValueInt() == 0
             ShowEnchantingRequiredMessage(enchantedItem, theEnchantment)
             AddItemToUnequipOnMenuClose(enchantedItem)

@@ -4,6 +4,8 @@ scriptName ApprenticeMCM extends SKI_ConfigBase
 GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
+GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+int property oid_Settings_RestrictEnchantedItemUsage auto
 
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
