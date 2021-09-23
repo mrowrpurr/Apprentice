@@ -32,9 +32,9 @@ int property oid_TrainedSkills_Magic_Destruction_Toggle auto
 int property oid_TrainedSkills_Magic_Illusion_Toggle auto
 int property oid_TrainedSkills_Magic_Restoration_Toggle auto
 
-; Smithing - TODO
+; Smithing
 GlobalVariable property Apprentice_Training_Smithing auto
-
+int property oid_TrainedSkills_Smithing_Toggle auto
 
 event OnConfigInit()
     ModName = "Apprentice"

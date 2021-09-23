@@ -71,6 +71,7 @@ endEvent
 
 event OnMenuOpen(string menuName)
     string description = UI.GetString("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.MenuDescription.text")
+
     if Apprentice_Training_Alchemy.GetValueInt() != 1 && StringUtil.Find(description, "Alchemy") > -1
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
@@ -83,11 +84,18 @@ event OnMenuOpen(string menuName)
         Input.TapKey(28) ; Enter
         Utility.WaitMenuMode(0.1)
         Debug.MessageBox("You need to train in Alchemy before you can use an Alchemy table")
+
     elseIf Apprentice_Training_Enchanting.GetValueInt() != 1 && StringUtil.Find(description, "Enchanting") > -1
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         Utility.WaitMenuMode(0.1)
         Debug.MessageBox("You need to train in Enchanting before you can use an Enchanting table")
+        
+    elseIf Apprentice_Training_Smithing.GetValueInt() == 0 && (StringUtil.Find(description, "Tanning Rack") > -1 || StringUtil.Find(description, "Blacksmith Forge") > -1 || StringUtil.Find(description, "Weapon Smithing") > -1 || StringUtil.Find(description, "Armor Smithing") > -1)
+        UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
+        UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
+        Utility.WaitMenuMode(0.1)
+        Debug.MessageBox("You need to train in Smithing before you can use this")
     endIf
 endEvent
 
