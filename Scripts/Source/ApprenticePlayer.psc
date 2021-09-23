@@ -91,7 +91,7 @@ event OnMenuOpen(string menuName)
         Utility.WaitMenuMode(0.1)
         Debug.MessageBox("You need to train in Enchanting before you can use an Enchanting table")
         
-    elseIf Apprentice_Training_Smithing.GetValueInt() == 0 && (StringUtil.Find(description, "Tanning Rack") > -1 || StringUtil.Find(description, "Blacksmith Forge") > -1 || StringUtil.Find(description, "Weapon Smithing") > -1 || StringUtil.Find(description, "Armor Smithing") > -1)
+    elseIf Apprentice_Training_Smithing.GetValueInt() == 0 && (StringUtil.Find(description, "Tanning Rack") > -1 || StringUtil.Find(description, "Blacksmith Forge") > -1 || StringUtil.Find(description, "Weapon Smithing") > -1 || StringUtil.Find(description, "Armor Smithing") > -1 || StringUtil.Find(description, "Smelter") > -1)
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
         Utility.WaitMenuMode(0.1)
@@ -124,6 +124,8 @@ event OnSkillIncrease(string trainedSkill)
         Apprentice_Training_Alchemy.SetValueInt(1)
     elseIf trainedSkill == "Enchanting"
         Apprentice_Training_Enchanting.SetValueInt(1)
+    elseIf trainedSkill == "Smithing"
+        Apprentice_Training_Smithing.SetValueInt(1)
     endIf
 endEvent
 
