@@ -85,10 +85,30 @@ endEvent
 function ListenForEvents()
     RegisterForMenu("Crafting Menu")
     RegisterForMenu("CraftingMenu")
+    RegisterForMenu("InventoryMenu")
+
+    int jumpKey = Input.GetMappedKey("Jump")
+    RegisterForKey(jumpKey)
 
     ; RegisterForMenu("Training Menu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
 endFunction
+
+event OnKeyDown(int keyCode)
+    Actor player = GetActorReference()
+    Form gold = Game.GetForm(0xf)
+    int goldCount = player.GetItemCount(gold)
+    if goldCount && Utility.RandomInt(1, 100) < 10
+        player.DropObject(gold, 1)
+    endIf
+endEvent
+
+event OnMenuClose(string menuName)
+    if UnequipOnMenuClose
+        GetActorReference().UnequipItem(UnequipOnMenuClose)
+        UnequipOnMenuClose = None
+    endIf
+endEvent
 
 event OnMenuOpen(string menuName)
     string description = UI.GetString("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.MenuDescription.text")
@@ -142,6 +162,8 @@ event OnSkillIncrease(string trainedSkill)
     endIf
 endEvent
 
+Form property UnequipOnMenuClose auto
+
 event OnObjectEquipped(Form object, ObjectReference instance)
     Actor player = GetActorReference()
     Debug.Trace("Player Equipped " + object.GetName())
@@ -151,13 +173,16 @@ event OnObjectEquipped(Form object, ObjectReference instance)
         string skillName = theWeapon.GetSkill()
         if skillName == "OneHanded" && ! IsTrainedIn_OneHanded
             Debug.MessageBox("You are not trained in One-Handed weapons")
-            player.UnequipItem(theWeapon)
+            UnequipOnMenuClose = theWeapon
+            ; player.UnequipItem(theWeapon)
         elseIf skillName == "TwoHanded" && ! IsTrainedIn_TwoHanded
             Debug.MessageBox("You are not trained in Two-Handed weapons")
-            player.UnequipItem(theWeapon)
+            UnequipOnMenuClose = theWeapon
+            ; player.UnequipItem(theWeapon)
         elseIf skillName == "Marksman" && ! Apprentice_Training_Marksman.GetValueInt() == 1
             Debug.MessageBox("You are not trained in Archery")
-            player.UnequipItem(theWeapon)
+            ; player.UnequipItem(theWeapon)
+            UnequipOnMenuClose = theWeapon
         endIf
     endIf
 
