@@ -1,5 +1,10 @@
 scriptName ApprenticeMCM extends SKI_ConfigBase
 
+; Options - THESE 3 ARE NOT YET USED
+GlobalVariable property Apprentice_ModEnabled auto
+GlobalVariable property Apprentice_Settings_DropOnEquip auto
+GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
+
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
 GlobalVariable property Apprentice_Training_LightArmor auto
@@ -47,14 +52,13 @@ event OnConfigInit()
 endEvent
 
 event OnPageReset(string page)
-    if page == "" ; "Home Page" - Show Logo
-        LoadCustomContent("Apprentice/Apprentice.dds")
-    else
-        UnloadCustomContent()
-    endIf
     ApprenticeMCM_TrainedSkills.Render(self, page)
 endEvent
 
 event OnOptionSelect(int optionId)
     ApprenticeMCM_TrainedSkills.OnOptionSelect(self, optionId)
+endEvent
+
+event OnOptionHighlight(int optionId)
+    ApprenticeMCM_TrainedSkills.OnOptionHighlight(self, optionId)
 endEvent
