@@ -3,74 +3,33 @@ Scriptname ApprenticePlayer extends ReferenceAlias
 
 ; TODO - Add Smithing and don't allow using ANY SMITHING items if not trained in smithing yet
 
+; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
 GlobalVariable property Apprentice_Training_LightArmor auto
+
+; Weapons
 GlobalVariable property Apprentice_Training_OneHanded auto
 GlobalVariable property Apprentice_Training_TwoHanded auto
 GlobalVariable property Apprentice_Training_Marksman auto
-GlobalVariable property Apprentice_Training_Restoration auto
-GlobalVariable property Apprentice_Training_Destruction auto
+
+; Magic Skills
 GlobalVariable property Apprentice_Training_Alchemy auto
 GlobalVariable property Apprentice_Training_Enchanting auto
+
+; Magic
+GlobalVariable property Apprentice_Training_Alteration auto
+GlobalVariable property Apprentice_Training_Conjuration auto
+GlobalVariable property Apprentice_Training_Illusion auto
+GlobalVariable property Apprentice_Training_Restoration auto
+GlobalVariable property Apprentice_Training_Destruction auto
+
+; Smithing
+GlobalVariable property Apprentice_Training_Smithing auto
 
 ; Note: For enchantments, we should only let you equip the item
 ;       if you are familiar with (aka trained in) the associated skill.
 
 ; Skill Books - require a few to unlock skill!
-
-; ; Weapon books read
-; int IsTrainedIn_OneHanded
-; int IsTrainedIn_TwoHanded
-; int IsTrainedIn_Marksman
-
-; ; Armor books read
-; int IsTrainedIn_HeavyArmor
-; int IsTrainedIn_LightArmor
-
-; ; Magic books read
-; int IsTrainedIn_Restoration
-; int IsTrainedIn_Alteration
-; int IsTrainedIn_Destruction
-; int IsTrainedIn_Conjuration
-; int IsTrainedIn_Illusion
-; int IsTrainedIn_Alchemy
-; int IsTrainedIn_Enchanting
-
-; Weapon training status
-bool IsTrainedIn_OneHanded = true
-bool IsTrainedIn_TwoHanded = false
-bool IsTrainedIn_Marksman = false
-
-; Armor training status
-bool IsTrainedIn_HeavyArmor = true
-bool IsTrainedIn_LightArmor = false
-
-; Magic training status
-bool IsTrainedIn_Restoration = true
-bool IsTrainedIn_Alteration = false
-bool IsTrainedIn_Destruction = false
-bool IsTrainedIn_Conjuration = false
-bool IsTrainedIn_Illusion = false
-bool IsTrainedIn_Alchemy = false
-bool IsTrainedIn_Enchanting = false
-
-; Weapon current skill level
-float CurrentSkillLevel_OneHanded
-float CurrentSkillLevel_TwoHanded
-float CurrentSkillLevel_Marksman
-
-; Armor current skill level
-float CurrentSkillLevel_HeavyArmor
-float CurrentSkillLevel_LightArmor
-
-; Magic current skill level
-float CurrentSkillLevel_Restoration
-float CurrentSkillLevel_Alteration
-float CurrentSkillLevel_Destruction
-float CurrentSkillLevel_Conjuration
-float CurrentSkillLevel_Illusion
-float CurrentSkillLevel_Alchemy
-float CurrentSkillLevel_Enchanting
 
 Armor MostRecentlyWornArmor
 
@@ -134,31 +93,29 @@ endEvent
 
 event OnSkillIncrease(string trainedSkill)
     if trainedSkill == "OneHanded"
-        IsTrainedIn_OneHanded = true
-        ; Apprentice_Training_OneHanded
+        Apprentice_Training_OneHanded.SetValueInt(1)
     elseIf trainedSkill == "TwoHanded"
-        IsTrainedIn_TwoHanded = true
+        Apprentice_Training_TwoHanded.SetValueInt(1)
     elseIf trainedSkill  == "Marksman"
         Apprentice_Training_Marksman.SetValueInt(1)
-        IsTrainedIn_Marksman = true
     elseIf trainedSkill == "HeavyArmor"
-        IsTrainedIn_HeavyArmor = true
+        Apprentice_Training_HeavyArmor.SetValueInt(1)
     elseIf trainedSkill == "LightArmor"
-        IsTrainedIn_LightArmor = true
+        Apprentice_Training_LightArmor.SetValueInt(1)
     elseIf trainedSkill == "Restoration"
-        IsTrainedIn_Restoration = true
+        Apprentice_Training_Restoration.SetValueInt(1)
     elseIf trainedSkill == "Alteration"
-        IsTrainedIn_Alchemy = true
+        Apprentice_Training_Alteration.SetValueInt(1)
     elseIf trainedSkill == "Destruction"
-        IsTrainedIn_Destruction = true
+        Apprentice_Training_Destruction.SetValueInt(1)
     elseIf trainedSkill == "Conjuration"
-        IsTrainedIn_Conjuration = true
+        Apprentice_Training_Conjuration.SetValueInt(1)
     elseIf trainedSkill == "Illusion"
-        IsTrainedIn_Illusion = true
+        Apprentice_Training_Illusion.SetValueInt(1)
     elseIf trainedSkill == "Alchemy"
-        IsTrainedIn_Alchemy = true
+        Apprentice_Training_Alchemy.SetValueInt(1)
     elseIf trainedSkill == "Enchanting"
-        IsTrainedIn_Enchanting = true
+        Apprentice_Training_Enchanting.SetValueInt(1)
     endIf
 endEvent
 
@@ -166,47 +123,142 @@ Form property UnequipOnMenuClose auto
 
 event OnObjectEquipped(Form object, ObjectReference instance)
     Actor player = GetActorReference()
-    Debug.Trace("Player Equipped " + object.GetName())
 
     Weapon theWeapon = object as Weapon
     if theWeapon
         string skillName = theWeapon.GetSkill()
-        if skillName == "OneHanded" && ! IsTrainedIn_OneHanded
-            Debug.MessageBox("You are not trained in One-Handed weapons")
+        if skillName == "OneHanded" && Apprentice_Training_OneHanded.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip this weapon until you get training in One-Handed weapons.")
             UnequipOnMenuClose = theWeapon
-            ; player.UnequipItem(theWeapon)
-        elseIf skillName == "TwoHanded" && ! IsTrainedIn_TwoHanded
-            Debug.MessageBox("You are not trained in Two-Handed weapons")
+        elseIf skillName == "TwoHanded" && Apprentice_Training_TwoHanded.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Two-Handed weapons.\n\nYou cannot equip this weapon until you get training in Two-Handed weapon.")
             UnequipOnMenuClose = theWeapon
-            ; player.UnequipItem(theWeapon)
-        elseIf skillName == "Marksman" && ! Apprentice_Training_Marksman.GetValueInt() == 1
-            Debug.MessageBox("You are not trained in Archery")
-            ; player.UnequipItem(theWeapon)
+        elseIf skillName == "Marksman" && Apprentice_Training_Marksman.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Archery.\n\nYou cannot equip this weapon until you get training in Archery weapon.")
             UnequipOnMenuClose = theWeapon
         endIf
     endIf
 
     Spell theSpell = object as Spell
     if theSpell
-        if ! IsRestorationSpell(theSpell)
-            Debug.Notification("You only know how to cast Restoration spells")
+        if IsAlterationSpell(theSpell) && Apprentice_Training_Alteration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Alteration spells.\n\nYou cannot cast this spell until you get training in Alteration.")
+            GetActorReference().UnequipSpell(theSpell, 0)
+            GetActorReference().UnequipSpell(theSpell, 1)
+        elseIf IsConjurationSpell(theSpell) && Apprentice_Training_Conjuration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Conjuration spells.\n\nYou cannot cast this spell until you get training in Conjuration.")
+            GetActorReference().UnequipSpell(theSpell, 0)
+            GetActorReference().UnequipSpell(theSpell, 1)
+        elseIf IsDestructionSpell(theSpell) && Apprentice_Training_Destruction.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Destruction spells.\n\nYou cannot cast this spell until you get training in Destruction.")
+            GetActorReference().UnequipSpell(theSpell, 0)
+            GetActorReference().UnequipSpell(theSpell, 1)
+        elseIf IsIllusionSpell(theSpell) && Apprentice_Training_Illusion.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Illusion spells.\n\nYou cannot cast this spell until you get training in Illusion.")
+            GetActorReference().UnequipSpell(theSpell, 0)
+            GetActorReference().UnequipSpell(theSpell, 1)
+        elseIf IsRestorationSpell(theSpell) && Apprentice_Training_Restoration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Restoration spells.\n\nYou cannot cast this spell until you get training in Restoration.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         endIf
     endIf
 
+    Scroll theScroll = object as Scroll
+    if theScroll
+        if IsAlterationScroll(theScroll) && Apprentice_Training_Alteration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Alteration spells.\n\nYou cannot cast this spell until you get training in Alteration.")
+            UnequipOnMenuClose = theScroll
+        elseIf IsConjurationScroll(theScroll) && Apprentice_Training_Conjuration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Conjuration spells.\n\nYou cannot cast this spell until you get training in Conjuration.")
+            UnequipOnMenuClose = theScroll
+        elseIf IsDestructionScroll(theScroll) && Apprentice_Training_Destruction.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Destruction spells.\n\nYou cannot cast this spell until you get training in Destruction.")
+            UnequipOnMenuClose = theScroll
+        elseIf IsIllusionScroll(theScroll) && Apprentice_Training_Illusion.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Illusion spells.\n\nYou cannot cast this spell until you get training in Illusion.")
+            UnequipOnMenuClose = theScroll
+        elseIf IsRestorationScroll(theScroll) && Apprentice_Training_Restoration.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Restoration spells.\n\nYou cannot cast this spell until you get training in Restoration.")
+            UnequipOnMenuClose = theScroll
+        endIf
+    endIf
+
     Armor theArmor = object as Armor
-    if theArmor
-        if IsArmor(theArmor) && ! IsHeavyArmor(theArmor)
-            Debug.MessageBox(theArmor.GetName() + " is not heavy armor, we only know how to use heavy armor")
+    if theArmor && IsArmor(theArmor)
+        if IsHeavyArmor(theArmor) && Apprentice_Training_HeavyArmor.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Heavy Armor.\n\nYou equip this armor until you get training in Heavy Armor.")
             GetActorReference().UnequipItem(theArmor)
             GetActorReference().EquipItem(MostRecentlyWornArmor)
-        else
+        elseIf IsLightArmor(theArmor) && Apprentice_Training_LightArmor.GetValueInt() == 0
+            Debug.MessageBox("You are not trained in Light Armor.\n\nYou equip this armor until you get training in Light Armor.")
+            GetActorReference().UnequipItem(theArmor)
+            GetActorReference().EquipItem(MostRecentlyWornArmor)
             ; Track it
             MostRecentlyWornArmor = theArmor
         endIf
     endIf
 endEvent
+
+bool function IsAlterationSpell(Spell theSpell)
+    bool isAlteration = true
+    int magicEffectCount = theSpell.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isAlteration
+        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Alteration"
+            isAlteration = false
+        endIf
+        i += 1
+    endWhile
+    return isAlteration
+endFunction
+
+bool function IsConjurationSpell(Spell theSpell)
+    bool isConjuration = true
+    int magicEffectCount = theSpell.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isConjuration
+        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Conjuration"
+            isConjuration = false
+        endIf
+        i += 1
+    endWhile
+    return isConjuration
+endFunction
+
+bool function IsDestructionSpell(Spell theSpell)
+    bool isDestruction = true
+    int magicEffectCount = theSpell.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isDestruction
+        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Destruction"
+            isDestruction = false
+        endIf
+        i += 1
+    endWhile
+    return isDestruction
+endFunction
+
+bool function IsIllusionSpell(Spell theSpell)
+    bool isIllusion = true
+    int magicEffectCount = theSpell.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isIllusion
+        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Illusion"
+            isIllusion = false
+        endIf
+        i += 1
+    endWhile
+    return isIllusion
+endFunction
 
 bool function IsRestorationSpell(Spell theSpell)
     bool isRestoration = true
@@ -214,6 +266,81 @@ bool function IsRestorationSpell(Spell theSpell)
     int i = 0
     while i < magicEffectCount && isRestoration
         MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Restoration"
+            isRestoration = false
+        endIf
+        i += 1
+    endWhile
+    return isRestoration
+endFunction
+
+bool function IsAlterationScroll(Scroll theScroll)
+    bool isAlteration = true
+    int magicEffectCount = theScroll.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isAlteration
+        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Alteration"
+            isAlteration = false
+        endIf
+        i += 1
+    endWhile
+    return isAlteration
+endFunction
+
+bool function IsConjurationScroll(Scroll theScroll)
+    bool isConjuration = true
+    int magicEffectCount = theScroll.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isConjuration
+        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Conjuration"
+            isConjuration = false
+        endIf
+        i += 1
+    endWhile
+    return isConjuration
+endFunction
+
+bool function IsDestructionScroll(Scroll theScroll)
+    bool isDestruction = true
+    int magicEffectCount = theScroll.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isDestruction
+        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Destruction"
+            isDestruction = false
+        endIf
+        i += 1
+    endWhile
+    return isDestruction
+endFunction
+
+bool function IsIllusionScroll(Scroll theScroll)
+    bool isIllusion = true
+    int magicEffectCount = theScroll.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isIllusion
+        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
+        string skillName = theEffect.GetAssociatedSkill()
+        if skillName != "Illusion"
+            isIllusion = false
+        endIf
+        i += 1
+    endWhile
+    return isIllusion
+endFunction
+
+bool function IsRestorationScroll(Scroll theScroll)
+    bool isRestoration = true
+    int magicEffectCount = theScroll.GetNumEffects()
+    int i = 0
+    while i < magicEffectCount && isRestoration
+        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
         string skillName = theEffect.GetAssociatedSkill()
         if skillName != "Restoration"
             isRestoration = false
@@ -231,61 +358,14 @@ bool function IsHeavyArmor(Armor theArmor)
     return theArmor.GetWeightClass() == 1
 endFunction
 
+bool function IsLightArmor(Armor theArmor)
+    return theArmor.GetWeightClass() == 0
+endFunction
+
 bool function IsClothing(Armor theArmor)
     return theArmor.GetWeightClass() == 2
 endFunction
 
 bool function IsArmor(Armor theArmor)
     return ! IsClothing(theArmor)
-endFunction
-
-function RecordCurrentSkills()
-    Actor player = GetActorReference()
-
-    ; Weapon current skill level
-    CurrentSkillLevel_OneHanded = player.GetActorValue("OneHanded")
-    CurrentSkillLevel_TwoHanded = player.GetActorValue("TwoHanded")
-    CurrentSkillLevel_Marksman  = player.GetActorValue("Marksman")
-
-    ; Armor current skill level
-    CurrentSkillLevel_HeavyArmor = player.GetActorValue("HeavyArmor")
-    CurrentSkillLevel_LightArmor = player.GetActorValue("LightArmor")
-
-    ; Magic current skill level
-    CurrentSkillLevel_Restoration = player.GetActorValue("Restoration")
-    CurrentSkillLevel_Alteration = player.GetActorValue("Alteration")
-    CurrentSkillLevel_Destruction = player.GetActorValue("Destruction")
-    CurrentSkillLevel_Conjuration = player.GetActorValue("Conjuration")
-    CurrentSkillLevel_Illusion = player.GetActorValue("Illusion")
-    CurrentSkillLevel_Alchemy = player.GetActorValue("Alchemy")
-    CurrentSkillLevel_Enchanting = player.GetActorValue("Enchanting")
-endFunction
-
-string function GetWhichSkillWasTrained()
-    Actor player = GetActorReference()
-    if CurrentSkillLevel_OneHanded != player.GetActorValue("OneHanded")
-        return "OneHanded"
-    elseIf CurrentSkillLevel_TwoHanded != player.GetActorValue("TwoHanded")
-        return "TwoHanded"
-    elseIf CurrentSkillLevel_Marksman  != player.GetActorValue("Marksman")
-        return "Marksman"
-    elseIf CurrentSkillLevel_HeavyArmor != player.GetActorValue("HeavyArmor")
-        return "HeavyArmor"
-    elseIf CurrentSkillLevel_LightArmor != player.GetActorValue("LightArmor")
-        return "LightArmor"
-    elseIf CurrentSkillLevel_Restoration != player.GetActorValue("Restoration")
-        return "Restoration"
-    elseIf CurrentSkillLevel_Alteration != player.GetActorValue("Alteration")
-        return "Alteration"
-    elseIf CurrentSkillLevel_Destruction != player.GetActorValue("Destruction")
-        return "Destruction"
-    elseIf CurrentSkillLevel_Conjuration != player.GetActorValue("Conjuration")
-        return "Conjuration"
-    elseIf CurrentSkillLevel_Illusion != player.GetActorValue("Illusion")
-        return "Illusion"
-    elseIf CurrentSkillLevel_Alchemy != player.GetActorValue("Alchemy")
-        return "Alchemy"
-    elseIf CurrentSkillLevel_Enchanting != player.GetActorValue("Enchanting")
-        return "Enchanting"
-    endIf
 endFunction
