@@ -256,6 +256,9 @@ function ShowEnchantingRequiredMessage(Form item, Enchantment theEnchantment)
     Debug.MessageBox(text)
 endFunction
 
+Scroll lastSelectedScroll
+float lastSelectedScrollAt
+
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
@@ -263,6 +266,14 @@ event OnObjectEquipped(Form object, ObjectReference instance)
     Spell theSpell   = object as Spell
     Scroll theScroll = object as Scroll
     Armor theArmor   = object as Armor
+
+    ; If within the past second this scroll was selected, ignore. SkyUI issue.
+    if theScroll && lastSelectedScroll && lastSelectedScroll == theScroll && (Utility.GetCurrentRealTime() - lastSelectedScrollAt) < 1
+        return
+    endIf
+
+    lastSelectedScroll = theScroll
+    lastSelectedScrollAt = Utility.GetCurrentRealTime()
 
     Enchantment theEnchantment
     Form enchantedItem
@@ -383,153 +394,43 @@ bool function EnchantmentRequiresMagicSkill(Enchantment theEnchantment, string s
 endFunction
 
 bool function IsAlterationSpell(Spell theSpell)
-    bool isAlteration = true
-    int magicEffectCount = theSpell.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isAlteration
-        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Alteration"
-            isAlteration = false
-        endIf
-        i += 1
-    endWhile
-    return isAlteration
+    return theSpell.GetMagicEffects()[0].GetAssociatedSkill() == "Alteration"
 endFunction
 
 bool function IsConjurationSpell(Spell theSpell)
-    bool isConjuration = true
-    int magicEffectCount = theSpell.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isConjuration
-        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Conjuration"
-            isConjuration = false
-        endIf
-        i += 1
-    endWhile
-    return isConjuration
+    return theSpell.GetMagicEffects()[0].GetAssociatedSkill() == "Conjuration"
 endFunction
 
 bool function IsDestructionSpell(Spell theSpell)
-    bool isDestruction = true
-    int magicEffectCount = theSpell.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isDestruction
-        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Destruction"
-            isDestruction = false
-        endIf
-        i += 1
-    endWhile
-    return isDestruction
+    return theSpell.GetMagicEffects()[0].GetAssociatedSkill() == "Destruction"
 endFunction
 
 bool function IsIllusionSpell(Spell theSpell)
-    bool isIllusion = true
-    int magicEffectCount = theSpell.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isIllusion
-        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Illusion"
-            isIllusion = false
-        endIf
-        i += 1
-    endWhile
-    return isIllusion
+    return theSpell.GetMagicEffects()[0].GetAssociatedSkill() == "Illusion"
 endFunction
 
 bool function IsRestorationSpell(Spell theSpell)
-    bool isRestoration = true
-    int magicEffectCount = theSpell.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isRestoration
-        MagicEffect theEffect = theSpell.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Restoration"
-            isRestoration = false
-        endIf
-        i += 1
-    endWhile
-    return isRestoration
+    return theSpell.GetMagicEffects()[0].GetAssociatedSkill() == "Restoration"
 endFunction
 
 bool function IsAlterationScroll(Scroll theScroll)
-    bool isAlteration = true
-    int magicEffectCount = theScroll.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isAlteration
-        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Alteration"
-            isAlteration = false
-        endIf
-        i += 1
-    endWhile
-    return isAlteration
+    return theScroll.GetMagicEffects()[0].GetAssociatedSkill() == "Alteration"
 endFunction
 
 bool function IsConjurationScroll(Scroll theScroll)
-    bool isConjuration = true
-    int magicEffectCount = theScroll.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isConjuration
-        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Conjuration"
-            isConjuration = false
-        endIf
-        i += 1
-    endWhile
-    return isConjuration
+    return theScroll.GetMagicEffects()[0].GetAssociatedSkill() == "Conjuration"
 endFunction
 
 bool function IsDestructionScroll(Scroll theScroll)
-    bool isDestruction = true
-    int magicEffectCount = theScroll.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isDestruction
-        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Destruction"
-            isDestruction = false
-        endIf
-        i += 1
-    endWhile
-    return isDestruction
+    return theScroll.GetMagicEffects()[0].GetAssociatedSkill() == "Destruction"
 endFunction
 
 bool function IsIllusionScroll(Scroll theScroll)
-    bool isIllusion = true
-    int magicEffectCount = theScroll.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isIllusion
-        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Illusion"
-            isIllusion = false
-        endIf
-        i += 1
-    endWhile
-    return isIllusion
+    return theScroll.GetMagicEffects()[0].GetAssociatedSkill() == "Illusion"
 endFunction
 
 bool function IsRestorationScroll(Scroll theScroll)
-    bool isRestoration = true
-    int magicEffectCount = theScroll.GetNumEffects()
-    int i = 0
-    while i < magicEffectCount && isRestoration
-        MagicEffect theEffect = theScroll.GetNthEffectMagicEffect(i)
-        string skillName = theEffect.GetAssociatedSkill()
-        if skillName != "Restoration"
-            isRestoration = false
-        endIf
-        i += 1
-    endWhile
-    return isRestoration
+    return theScroll.GetMagicEffects()[0].GetAssociatedSkill() == "Restoration"
 endFunction
 
 bool function IsOneHandedWeapon(Weapon theWeapon)
