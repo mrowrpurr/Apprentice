@@ -19,7 +19,6 @@ Perk property Apprentice_Restrictions_Perk auto
 
 ; Options - THESE 3 ARE NOT YET USED
 GlobalVariable property Apprentice_ModEnabled auto
-GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 
@@ -35,6 +34,8 @@ GlobalVariable property Apprentice_Training_HeavyArmor auto
 GlobalVariable property Apprentice_Training_LightArmor auto
 
 ; Weapons
+Keyword property WeapTypeDagger auto
+GlobalVariable property Apprentice_Training_Daggers auto
 GlobalVariable property Apprentice_Training_OneHanded auto
 GlobalVariable property Apprentice_Training_TwoHanded auto
 GlobalVariable property Apprentice_Training_Marksman auto
@@ -66,13 +67,6 @@ bool IsBookMenuOpen = false
 
 ; Runs on initial mod installation
 event OnInit()
-    ; For Testing
-    GetActorReference().SetActorValue("Marksman", 0) ; Your skill is 1
-    Apprentice_Training_Marksman.SetValueInt(1) ; You are Trained
-    ; GetActorReference().PlaceAtMe(Game.GetForm(0x23AB7), 3)
-    ;;;;
-
-
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
@@ -140,68 +134,44 @@ endFunction
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
-    if IsBookMenuOpen
-        Debug.MessageBox("You trained from a book " + skillName)
-    elseIf IsTrainingMenuOpen
-        Debug.MessageBox("You trained from a trainer " + skillName)
-    else
-        Debug.MessageBox("You leveled up this skill by yourself: " + skillName)
+    if skillName == "OneHanded"
+        Apprentice_Training_OneHanded.SetValueInt(1)
+    elseIf skillName == "TwoHanded"
+        Apprentice_Training_TwoHanded.SetValueInt(1)
+    elseIf skillName  == "Marksman"
+        Apprentice_Training_Marksman.SetValueInt(1)
+    elseIf skillName == "HeavyArmor"
+        Apprentice_Training_HeavyArmor.SetValueInt(1)
+    elseIf skillName == "LightArmor"
+        Apprentice_Training_LightArmor.SetValueInt(1)
+    elseIf skillName == "Restoration"
+        Apprentice_Training_Restoration.SetValueInt(1)
+    elseIf skillName == "Alteration"
+        Apprentice_Training_Alteration.SetValueInt(1)
+    elseIf skillName == "Destruction"
+        Apprentice_Training_Destruction.SetValueInt(1)
+    elseIf skillName == "Conjuration"
+        Apprentice_Training_Conjuration.SetValueInt(1)
+    elseIf skillName == "Illusion"
+        Apprentice_Training_Illusion.SetValueInt(1)
+    elseIf skillName == "Alchemy"
+        Apprentice_Training_Alchemy.SetValueInt(1)
+    elseIf skillName == "Enchanting"
+        Apprentice_Training_Enchanting.SetValueInt(1)
+    elseIf skillName == "Smithing"
+        Apprentice_Training_Smithing.SetValueInt(1)
+    elseIf skillName == "Lockpicking"
+        Apprentice_Training_Lockpicking.SetValueInt(1)
+    elseIf skillName == "Pickpocket"
+        Apprentice_Training_Pickpocket.SetValueInt(1)
     endIf
-
-
-    ; if AtMaximumForSkill(skillName)
-    ;     Debug.MessageBox("You can no longer advance this skill without seeing a trainer")
-    ;     TrackMaxedOutSkill(skillName)
-    ;     ReduceSkillIfAdvancedTooFar(skillName)
-    ; else
-    ;     MarkSkillAsTrainedIfNotYetTrained(skillName)
-    ; endIf
 endEvent
-
-;     Log("Skill Increased: " + skillName)
-;     if skillName == "OneHanded"
-;         Apprentice_Training_OneHanded.SetValueInt(1)
-;     elseIf skillName == "TwoHanded"
-;         Apprentice_Training_TwoHanded.SetValueInt(1)
-
-
-
-;     elseIf skillName  == "Marksman"
-;         Apprentice_Training_Marksman.SetValueInt(1)
-;         Debug.MessageBox(GetActorReference().GetActorValue("Marksman"))
-        
-
-
-;     elseIf skillName == "HeavyArmor"
-;         Apprentice_Training_HeavyArmor.SetValueInt(1)
-;     elseIf skillName == "LightArmor"
-;         Apprentice_Training_LightArmor.SetValueInt(1)
-;     elseIf skillName == "Restoration"
-;         Apprentice_Training_Restoration.SetValueInt(1)
-;     elseIf skillName == "Alteration"
-;         Apprentice_Training_Alteration.SetValueInt(1)
-;     elseIf skillName == "Destruction"
-;         Apprentice_Training_Destruction.SetValueInt(1)
-;     elseIf skillName == "Conjuration"
-;         Apprentice_Training_Conjuration.SetValueInt(1)
-;     elseIf skillName == "Illusion"
-;         Apprentice_Training_Illusion.SetValueInt(1)
-;     elseIf skillName == "Alchemy"
-;         Apprentice_Training_Alchemy.SetValueInt(1)
-;     elseIf skillName == "Enchanting"
-;         Apprentice_Training_Enchanting.SetValueInt(1)
-;     elseIf skillName == "Smithing"
-;         Apprentice_Training_Smithing.SetValueInt(1)
-;     elseIf skillName == "Lockpicking"
-;         Apprentice_Training_Lockpicking.SetValueInt(1)
-;     elseIf skillName == "Pickpocket"
-;         Apprentice_Training_Pickpocket.SetValueInt(1)
-;     endIf
-; endEvent
 
 ; Tracks all items to unequip, see AddItemToUnequipOnMenuClose and UnequipAllItemsWhichShouldBeUnequipped
 Form[] _itemsToUnequip
 
+; TODO - UNEQUIP ALL IMMEDIATELY EXPECT ... ARMOR? Whichever one CTDs
+;
 ; If you try to equip an item which you cannot, this queues it up to be unequipped as soon as the Inventory menu closes.
 ; We only do this because, if you unequip immediately SkyUI has a lovely tendency to crash :)
 function AddItemToUnequipOnMenuClose(Form item)
@@ -333,8 +303,14 @@ event OnObjectEquipped(Form object, ObjectReference instance)
     if theWeapon
         string skillName = theWeapon.GetSkill()
         if skillName == "OneHanded" && Apprentice_Training_OneHanded.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
-            AddItemToUnequipOnMenuClose(theWeapon)
+            if theWeapon.HasKeyword(WeapTypeDagger) && Apprentice_Training_Daggers.GetValueInt() != 0
+                ; Trained in Daggers and this is a dagger
+                ; So do nothing
+            else
+                Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
+                AddItemToUnequipOnMenuClose(theWeapon)
+                ; GetActorReference().UnequipItem(theWeapon)
+            endIf            
         elseIf skillName == "TwoHanded" && Apprentice_Training_TwoHanded.GetValueInt() == 0
             Debug.MessageBox("You are not trained in Two-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Two-Handed weapon.")
             AddItemToUnequipOnMenuClose(theWeapon)

@@ -16,9 +16,11 @@ int property oid_TrainedSkills_Armor_LightArmor_Toggle auto
 int property oid_TrainedSkills_Armor_HeavyArmor_Toggle auto
 
 ; Weapons
+GlobalVariable property Apprentice_Training_Daggers auto
 GlobalVariable property Apprentice_Training_OneHanded auto
 GlobalVariable property Apprentice_Training_TwoHanded auto
 GlobalVariable property Apprentice_Training_Marksman auto
+int property oid_TrainedSkills_Weapons_Daggers_Toggle auto
 int property oid_TrainedSkills_Weapons_OneHanded_Toggle auto
 int property oid_TrainedSkills_Weapons_TwoHanded_Toggle auto
 int property oid_TrainedSkills_Weapons_Marksman_Toggle auto

@@ -12,8 +12,7 @@ function LeftColumn(ApprenticeMCM mcm) global
     LockAllOptions(mcm)
     Armor(mcm)
     Weapons(mcm)
-    Smithing(mcm)
-    Blocking(mcm)
+    SmithingAndBlocking(mcm)
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
@@ -38,13 +37,9 @@ function Armor(ApprenticeMCM mcm) global
     mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle = mcm.AddToggleOption("Heavy Armor", mcm.Apprentice_Training_HeavyArmor.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
 endFunction
 
-function Smithing(ApprenticeMCM mcm) global
-    mcm.AddHeaderOption("Smithing")
+function SmithingAndBlocking(ApprenticeMCM mcm) global
+    mcm.AddHeaderOption("Smithing & Block")
     mcm.oid_TrainedSkills_Smithing_Toggle = mcm.AddToggleOption("Smithing", mcm.Apprentice_Training_Smithing.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-endFunction
-
-function Blocking(ApprenticeMCM mcm) global
-    mcm.AddHeaderOption("Block")
     mcm.oid_TrainedSkills_Block_Toggle = mcm.AddToggleOption("Block", mcm.Apprentice_Training_Block.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
 endFunction
 
@@ -66,6 +61,7 @@ endFunction
 
 function Weapons(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Weapons")
+    mcm.oid_TrainedSkills_Weapons_Daggers_Toggle = mcm.AddToggleOption("Daggers", mcm.Apprentice_Training_Daggers.GetValueInt() == 1 || mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
     mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle = mcm.AddToggleOption("One Handed", mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
     mcm.oid_TrainedSkills_Weapons_TwoHanded_Toggle = mcm.AddToggleOption("Two Handed", mcm.Apprentice_Training_TwoHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
     mcm.oid_TrainedSkills_Weapons_Marksman_Toggle = mcm.AddToggleOption("Archery", mcm.Apprentice_Training_Marksman.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
@@ -142,13 +138,26 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         endIf
 
     ; Weapons
+    elseIf optionId == mcm.oid_TrainedSkills_Weapons_Daggers_Toggle
+        if mcm.Apprentice_Training_Daggers.GetValueInt() == 1
+            mcm.Apprentice_Training_Daggers.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_Daggers_Toggle, false)
+        else
+            mcm.Apprentice_Training_Daggers.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_Daggers_Toggle, true)
+        endIf
+
     elseIf optionId == mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle
         if mcm.Apprentice_Training_OneHanded.GetValueInt() == 1
             mcm.Apprentice_Training_OneHanded.SetValueInt(0)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle, false)
+            if mcm.Apprentice_Training_Daggers.GetValueInt() == 0
+                mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_Daggers_Toggle, false)
+            endIf
         else
             mcm.Apprentice_Training_OneHanded.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle, true)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Weapons_Daggers_Toggle, true)
         endIf
 
     elseIf optionId == mcm.oid_TrainedSkills_Weapons_TwoHanded_Toggle
@@ -252,6 +261,8 @@ function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
     elseIf optionId == mcm.oid_TrainedSkills_Block_Toggle
         mcm.SetInfoText("Toggle Training in Block (required to use shields)")
     ; Weapons
+    elseIf optionId == mcm.oid_TrainedSkills_Weapons_Daggers_Toggle
+        mcm.SetInfoText("Toggle Training in Daggers (allows player to equip daggers without training in one-handed)")
     elseIf optionId == mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle
         mcm.SetInfoText("Toggle Training in One-Handed Weapons (required to equip one-handed weapons)")
     elseIf optionId == mcm.oid_TrainedSkills_Weapons_TwoHanded_Toggle
