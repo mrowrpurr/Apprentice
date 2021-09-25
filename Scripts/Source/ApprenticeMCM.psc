@@ -1,11 +1,13 @@
 scriptName ApprenticeMCM extends SKI_ConfigBase
 
-; Options - THESE 3 ARE NOT YET USED
+; Settings
 GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 int property oid_Settings_RestrictEnchantedItemUsage auto
+int property oid_Settings_LockTrainingMenu auto
+int property TrainingMenuOptionFlag auto
 
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
@@ -60,6 +62,9 @@ event OnConfigInit()
 endEvent
 
 event OnPageReset(string page)
+    if TrainingMenuOptionFlag == 0
+        TrainingMenuOptionFlag = OPTION_FLAG_NONE
+    endIf
     ApprenticeMCM_TrainedSkills.Render(self, page)
 endEvent
 
