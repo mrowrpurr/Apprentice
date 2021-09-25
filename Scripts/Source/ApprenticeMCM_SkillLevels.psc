@@ -35,6 +35,10 @@ float function GetAV(string skillName) global
     return Game.GetPlayer().GetActorValue(skillName)
 endFunction
 
+function SetAV(string skillName, float value) global
+    Game.GetPlayer().SetActorValue(skillName, value)
+endFunction
+
 function Armor(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Armor")
     mcm.oid_Skills_LightArmor_Slider = mcm.AddSliderOption("Light Armor", GetAV("LightArmor"), a_flags = mcm.LockableOptionFlag)
@@ -77,21 +81,131 @@ function MagicSkills(ApprenticeMCM mcm) global
     mcm.oid_Skills_Enchanting_Slider = mcm.AddSliderOption("Enchanting", GetAV("Enchanting"), a_flags = mcm.LockableOptionFlag)
 endFunction
 
+function SetSliderValuesForSkill(ApprenticeMCM mcm, string skillName) global
+    float skillValue = GetAV(skillName)
+    mcm.SetSliderDialogDefaultValue(skillValue)
+    mcm.SetSliderDialogStartValue(skillValue)
+    mcm.SetSliderDialogRange(0, 100)
+    mcm.SetSliderDialogInterval(1)
+endFunction
+
 function OnOptionSliderOpen(ApprenticeMCM mcm, int optionId) global
-    if optionId == mcm.oid_AvailablePerkCount_Slider
-        int currentPoints = Game.GetPerkPoints()
-        mcm.SetSliderDialogDefaultValue(currentPoints)
-        mcm.SetSliderDialogStartValue(currentPoints)
-        mcm.SetSliderDialogRange(0, 100)
-        mcm.SetSliderDialogInterval(1)
-    else
-        Debug.MessageBox("We don't support this slider yet " + optionId)
+    ; Armor
+    if optionId == mcm.oid_Skills_HeavyArmor_Slider
+        SetSliderValuesForSkill(mcm, "HeavyArmor")
+    elseIf optionId == mcm.oid_Skills_LightArmor_Slider
+        SetSliderValuesForSkill(mcm, "LightArmor")
+    ; Weapons
+    elseIf optionId == mcm.oid_Skills_OneHanded_Slider
+        SetSliderValuesForSkill(mcm, "OneHanded")
+    elseIf optionId == mcm.oid_Skills_TwoHanded_Slider
+        SetSliderValuesForSkill(mcm, "TwoHanded")
+    elseIf optionId == mcm.oid_Skills_Marksman_Slider
+        SetSliderValuesForSkill(mcm, "Marksman")
+    ; Other
+    elseIf optionId == mcm.oid_Skills_Smithing_Slider
+        SetSliderValuesForSkill(mcm, "Smithing")
+    elseIf optionId == mcm.oid_Skills_Block_Slider
+        SetSliderValuesForSkill(mcm, "Block")
+    elseIf optionId == mcm.oid_Skills_Sneak_Slider
+        SetSliderValuesForSkill(mcm, "Sneak")
+    elseIf optionId == mcm.oid_Skills_Speechcraft_Slider
+        SetSliderValuesForSkill(mcm, "Speechcraft")
+    ; Pickpocket/Lockpicking
+    elseIf optionId == mcm.oid_Skills_Lockpicking_Slider
+        SetSliderValuesForSkill(mcm, "Lockpicking")
+    elseIf optionId == mcm.oid_Skills_Pickpocket_Slider
+        SetSliderValuesForSkill(mcm, "Pickpocket")
+    ; Magic
+    elseIf optionId == mcm.oid_Skills_Alteration_Slider
+        SetSliderValuesForSkill(mcm, "Alteration")
+    elseIf optionId == mcm.oid_Skills_Conjuration_Slider
+        SetSliderValuesForSkill(mcm, "Conjuration")
+    elseIf optionId == mcm.oid_Skills_Destruction_Slider
+        SetSliderValuesForSkill(mcm, "Destruction")
+    elseIf optionId == mcm.oid_Skills_Illusion_Slider
+        SetSliderValuesForSkill(mcm, "Illusion")
+    elseIf optionId == mcm.oid_Skills_Restoration_Slider
+        SetSliderValuesForSkill(mcm, "Restoration")
+    ; Magic Skills
+    elseIf optionId == mcm.oid_Skills_Alchemy_Slider
+        SetSliderValuesForSkill(mcm, "Alchemy")
+    elseIf optionId == mcm.oid_Skills_Enchanting_Slider
+        SetSliderValuesForSkill(mcm, "Enchanting")
     endIf
 endFunction
 
 function OnOptionSliderAccept(ApprenticeMCM mcm, int optionId, float value) global
-    if optionId == mcm.oid_AvailablePerkCount_Slider
-        Game.SetPerkPoints(value as int)
-        mcm.SetSliderOptionValue(mcm.oid_AvailablePerkCount_Slider, value as int)
+    ; Armor
+    if optionId == mcm.oid_Skills_LightArmor_Slider
+        SetAV("LightArmor", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_LightArmor_Slider, value)
+    elseIf optionId == mcm.oid_Skills_HeavyArmor_Slider
+        SetAV("HeavyArmor", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_HeavyArmor_Slider, value)
+    ; Weapons
+    elseIf optionId == mcm.oid_Skills_OneHanded_Slider
+        SetAV("OneHanded", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_OneHanded_Slider, value)
+    elseIf optionId == mcm.oid_Skills_TwoHanded_Slider
+        SetAV("TwoHanded", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_TwoHanded_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Marksman_Slider
+        SetAV("Marksman", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Marksman_Slider, value)
+    ; Other
+    elseIf optionId == mcm.oid_Skills_Smithing_Slider
+        SetAV("Smithing", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Smithing_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Block_Slider
+        SetAV("Block", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Block_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Sneak_Slider
+        SetAV("Sneak", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Sneak_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Speechcraft_Slider
+        SetAV("Speechcraft", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Speechcraft_Slider, value)
+    ; Pickpocket/Lockpicking
+    elseIf optionId == mcm.oid_Skills_Lockpicking_Slider
+        SetAV("Lockpicking", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Lockpicking_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Pickpocket_Slider
+        SetAV("Pickpocket", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Pickpocket_Slider, value)
+    ; Magic
+    elseIf optionId == mcm.oid_Skills_Alteration_Slider
+        SetAV("Alteration", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Alteration_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Conjuration_Slider
+        SetAV("Conjuration", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Conjuration_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Destruction_Slider
+        SetAV("Destruction", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Destruction_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Illusion_Slider
+        SetAV("Illusion", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Illusion_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Restoration_Slider
+        SetAV("Restoration", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Restoration_Slider, value)
+    ; Magic Skills
+    elseIf optionId == mcm.oid_Skills_Alchemy_Slider
+        SetAV("Alchemy", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Alchemy_Slider, value)
+    elseIf optionId == mcm.oid_Skills_Enchanting_Slider
+        SetAV("Enchanting", value)
+        mcm.SetSliderOptionValue(mcm.oid_Skills_Enchanting_Slider, value)
     endIf
 endFunction
+
+    ; if optionId == mcm.oid_AvailablePerkCount_Slider
+    ;     int currentPoints = Game.GetPerkPoints()
+    ;     mcm.SetSliderDialogDefaultValue(currentPoints)
+    ;     mcm.SetSliderDialogStartValue(currentPoints)
+    ;     mcm.SetSliderDialogRange(0, 100)
+    ;     mcm.SetSliderDialogInterval(1)
+    ; if optionId == mcm.oid_AvailablePerkCount_Slider
+    ;     Game.SetPerkPoints(value as int)
+    ;     mcm.SetSliderOptionValue(mcm.oid_AvailablePerkCount_Slider, value as int)
+    ; endIf
