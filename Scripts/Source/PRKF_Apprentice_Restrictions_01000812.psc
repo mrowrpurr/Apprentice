@@ -1,5 +1,5 @@
 ;BEGIN FRAGMENT CODE - Do not edit anything between this and the end comment
-;NEXT FRAGMENT INDEX 8
+;NEXT FRAGMENT INDEX 10
 Scriptname PRKF_Apprentice_Restrictions_01000812 Extends Perk Hidden
 
 ;BEGIN FRAGMENT Fragment_0
@@ -14,6 +14,14 @@ EndFunction
 Function Fragment_6(ObjectReference akTargetRef, Actor akActor)
 ;BEGIN CODE
 Debug.MessageBox("You are not trained in Alchemy")
+;END CODE
+EndFunction
+;END FRAGMENT
+
+;BEGIN FRAGMENT Fragment_8
+Function Fragment_8(ObjectReference akTargetRef, Actor akActor)
+;BEGIN CODE
+Debug.MessageBox("You are not trained in Enchanting")
 ;END CODE
 EndFunction
 ;END FRAGMENT
