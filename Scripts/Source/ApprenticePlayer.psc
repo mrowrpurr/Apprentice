@@ -22,6 +22,7 @@ Perk property Apprentice_Restrictions_Perk auto
 
 ; Options - THESE 3 ARE NOT YET USED
 GlobalVariable property Apprentice_ModEnabled auto
+GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 
@@ -119,24 +120,13 @@ event OnMenuClose(string menuName)
     endIf
 endEvent
 
-string[] MaxedOutSkills
-
-bool function AtMaximumForSkill(string skillName)
-    return false ; Never maxed out yet
-endFunction
-
-function TrackMaxedOutSkill(string skillName)
-endFunction
-
-function ReduceSkillIfAdvancedTooFar(string skillName)
-endFunction
-
-function MarkSkillAsTrainedIfNotYetTrained(string skillName)
-endFunction
-
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
+    if Apprentice_Settings_TrainFromBooks.GetValueInt() == 0
+        return
+    endIf
+
     if skillName == "OneHanded"
         Apprentice_Training_OneHanded.SetValueInt(1)
     elseIf skillName == "TwoHanded"

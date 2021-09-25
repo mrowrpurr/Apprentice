@@ -2,10 +2,12 @@ scriptName ApprenticeMCM extends SKI_ConfigBase
 
 ; Settings
 GlobalVariable property Apprentice_ModEnabled auto
+GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 int property oid_Settings_RestrictEnchantedItemUsage auto
+int property oid_Settings_TrainFromBooks_Toggle auto
 int property oid_Settings_LockTrainingMenu auto
 int property TrainingMenuOptionFlag auto
 
@@ -80,9 +82,11 @@ event OnPageReset(string page)
 endEvent
 
 event OnOptionSelect(int optionId)
+    ApprenticeMCM_Settings.OnOptionSelect(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionSelect(self, optionId)
 endEvent
 
 event OnOptionHighlight(int optionId)
+    ApprenticeMCM_Settings.OnOptionHighlight(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionHighlight(self, optionId)
 endEvent
