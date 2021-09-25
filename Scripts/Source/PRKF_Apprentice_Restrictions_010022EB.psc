@@ -10,4 +10,13 @@ Debug.MessageBox("You are not trained in Lockpicking")
 EndFunction
 ;END FRAGMENT
 
+;BEGIN FRAGMENT Fragment_2
+Function Fragment_2(ObjectReference akTargetRef, Actor akActor)
+;BEGIN CODE
+Debug.MessageBox("You are not trained in Pickpocket")
+;END CODE
+EndFunction
+;END FRAGMENT
+
+
 ;END FRAGMENT CODE - Do not edit anything between this and the begin comment
