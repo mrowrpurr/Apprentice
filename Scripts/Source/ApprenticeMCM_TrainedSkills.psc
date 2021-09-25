@@ -10,7 +10,7 @@ function Render(ApprenticeMCM mcm, string page) global
 endFunction
 
 function LeftColumn(ApprenticeMCM mcm) global
-    LockAllOptions(mcm)
+    ; LockAllOptions(mcm)
     Armor(mcm)
     Weapons(mcm)
     SmithingAndBlocking(mcm)
@@ -22,49 +22,49 @@ function RightColumn(ApprenticeMCM mcm) global
     MagicSkills(mcm)
 endFunction
 
-function LockAllOptions(ApprenticeMCM mcm) global
-    mcm.oid_Settings_LockTrainingMenu = mcm.AddTextOption("", "Click here to lock these options")
-endFunction
+; function LockAllOptions(ApprenticeMCM mcm) global
+;     mcm.oid_Settings_LockTrainingMenu = mcm.AddTextOption("", "Click here to lock these options")
+; endFunction
 
 function LockpickingAndPickpocket(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Lockpicking & Pickpocket")
-    mcm.oid_TrainedSkills_Lockpicking_Toggle = mcm.AddToggleOption("Lockpicking", mcm.Apprentice_Training_Lockpicking.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Pickpocket_Toggle = mcm.AddToggleOption("Pickpocket", mcm.Apprentice_Training_Pickpocket.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Lockpicking_Toggle = mcm.AddToggleOption("Lockpicking", mcm.Apprentice_Training_Lockpicking.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Pickpocket_Toggle = mcm.AddToggleOption("Pickpocket", mcm.Apprentice_Training_Pickpocket.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function Armor(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Armor")
-    mcm.oid_TrainedSkills_Armor_LightArmor_Toggle = mcm.AddToggleOption("Light Armor", mcm.Apprentice_Training_LightArmor.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle = mcm.AddToggleOption("Heavy Armor", mcm.Apprentice_Training_HeavyArmor.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Armor_LightArmor_Toggle = mcm.AddToggleOption("Light Armor", mcm.Apprentice_Training_LightArmor.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle = mcm.AddToggleOption("Heavy Armor", mcm.Apprentice_Training_HeavyArmor.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function SmithingAndBlocking(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Smithing & Block")
-    mcm.oid_TrainedSkills_Smithing_Toggle = mcm.AddToggleOption("Smithing", mcm.Apprentice_Training_Smithing.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Block_Toggle = mcm.AddToggleOption("Block", mcm.Apprentice_Training_Block.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Smithing_Toggle = mcm.AddToggleOption("Smithing", mcm.Apprentice_Training_Smithing.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Block_Toggle = mcm.AddToggleOption("Block", mcm.Apprentice_Training_Block.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function MagicSkills(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Magic Skills")
-    mcm.oid_TrainedSkills_Magic_Alchemy_Toggle = mcm.AddToggleOption("Alchemy", mcm.Apprentice_Training_Alchemy.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Magic_Enchanting_Toggle = mcm.AddToggleOption("Enchanting", mcm.Apprentice_Training_Enchanting.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Alchemy_Toggle = mcm.AddToggleOption("Alchemy", mcm.Apprentice_Training_Alchemy.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Enchanting_Toggle = mcm.AddToggleOption("Enchanting", mcm.Apprentice_Training_Enchanting.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function Magic(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Magic")
-    mcm.oid_TrainedSkills_Magic_Alteration_Toggle = mcm.AddToggleOption("Alteration", mcm.Apprentice_Training_Alteration.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Magic_Conjuration_Toggle = mcm.AddToggleOption("Conjuration", mcm.Apprentice_Training_Conjuration.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Magic_Destruction_Toggle = mcm.AddToggleOption("Destruction", mcm.Apprentice_Training_Destruction.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Magic_Illusion_Toggle = mcm.AddToggleOption("Illusion", mcm.Apprentice_Training_Illusion.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Magic_Restoration_Toggle = mcm.AddToggleOption("Restoration", mcm.Apprentice_Training_Restoration.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Alteration_Toggle = mcm.AddToggleOption("Alteration", mcm.Apprentice_Training_Alteration.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Conjuration_Toggle = mcm.AddToggleOption("Conjuration", mcm.Apprentice_Training_Conjuration.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Destruction_Toggle = mcm.AddToggleOption("Destruction", mcm.Apprentice_Training_Destruction.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Illusion_Toggle = mcm.AddToggleOption("Illusion", mcm.Apprentice_Training_Illusion.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Magic_Restoration_Toggle = mcm.AddToggleOption("Restoration", mcm.Apprentice_Training_Restoration.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function Weapons(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Weapons")
-    mcm.oid_TrainedSkills_Weapons_Daggers_Toggle = mcm.AddToggleOption("Daggers", mcm.Apprentice_Training_Daggers.GetValueInt() == 1 || mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle = mcm.AddToggleOption("One Handed", mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Weapons_TwoHanded_Toggle = mcm.AddToggleOption("Two Handed", mcm.Apprentice_Training_TwoHanded.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_TrainedSkills_Weapons_Marksman_Toggle = mcm.AddToggleOption("Archery", mcm.Apprentice_Training_Marksman.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_TrainedSkills_Weapons_Daggers_Toggle = mcm.AddToggleOption("Daggers", mcm.Apprentice_Training_Daggers.GetValueInt() == 1 || mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Weapons_OneHanded_Toggle = mcm.AddToggleOption("One Handed", mcm.Apprentice_Training_OneHanded.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Weapons_TwoHanded_Toggle = mcm.AddToggleOption("Two Handed", mcm.Apprentice_Training_TwoHanded.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_TrainedSkills_Weapons_Marksman_Toggle = mcm.AddToggleOption("Archery", mcm.Apprentice_Training_Marksman.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
@@ -77,9 +77,9 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.Apprentice_Settings_RestrictEnchantedItemUsage.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_Settings_RestrictEnchantedItemUsage, true)
         endIf
-    elseIf optionId == mcm.oid_Settings_LockTrainingMenu
-        mcm.TrainingMenuOptionFlag = mcm.OPTION_FLAG_DISABLED
-        mcm.ForcePageReset()
+    ; elseIf optionId == mcm.oid_Settings_LockTrainingMenu
+    ;     mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
+    ;     mcm.ForcePageReset()
 
     ; Lockpicking & Pickpocket
     elseIf optionId == mcm.oid_TrainedSkills_Lockpicking_Toggle

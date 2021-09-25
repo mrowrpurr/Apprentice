@@ -10,9 +10,11 @@ function Render(ApprenticeMCM mcm, string page) global
 endFunction
 
 function LeftColumn(ApprenticeMCM mcm) global
+    mcm.oid_LockMenu = mcm.AddTextOption("", "Click here to lock this menu")
+
     mcm.AddHeaderOption("Settings")
     mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1)
-    mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
+    mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
@@ -21,6 +23,12 @@ function RightColumn(ApprenticeMCM mcm) global
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
+    if optionId == mcm.oid_LockMenu
+        mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
+        mcm.ForcePageReset()
+        return
+    endIf
+
     ; Magic Enchanting
     if optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
         if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
