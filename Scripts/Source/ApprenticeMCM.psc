@@ -47,6 +47,12 @@ int property oid_TrainedSkills_Smithing_Toggle auto
 GlobalVariable property Apprentice_Training_Block auto
 int property oid_TrainedSkills_Block_Toggle auto
 
+; Lockpicking & Pickpocket
+GlobalVariable property Apprentice_Training_Lockpicking auto
+GlobalVariable property Apprentice_Training_Pickpocket auto
+int property oid_TrainedSkills_Lockpicking_Toggle auto
+int property oid_TrainedSkills_Pickpocket_Toggle auto
+
 event OnConfigInit()
     ModName = "Apprentice"
     Pages = new string[1]

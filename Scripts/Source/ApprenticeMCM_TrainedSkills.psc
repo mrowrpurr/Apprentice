@@ -16,8 +16,15 @@ function LeftColumn(ApprenticeMCM mcm) global
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
+    LockpickingAndPickpocket(mcm)
     Magic(mcm)
     MagicSkills(mcm)
+endFunction
+
+function LockpickingAndPickpocket(ApprenticeMCM mcm) global
+    mcm.AddHeaderOption("Lockpicking & Pickpocket")
+    mcm.oid_TrainedSkills_Lockpicking_Toggle = mcm.AddToggleOption("Lockpicking", mcm.Apprentice_Training_Lockpicking.GetValueInt() == 1)
+    mcm.oid_TrainedSkills_Pickpocket_Toggle = mcm.AddToggleOption("Pickpocket", mcm.Apprentice_Training_Pickpocket.GetValueInt() == 1)
 endFunction
 
 function Armor(ApprenticeMCM mcm) global
@@ -68,6 +75,24 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         else
             mcm.Apprentice_Settings_RestrictEnchantedItemUsage.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_Settings_RestrictEnchantedItemUsage, true)
+        endIf
+
+    ; Lockpicking & Pickpocket
+    elseIf optionId == mcm.oid_TrainedSkills_Lockpicking_Toggle
+        if mcm.Apprentice_Training_Lockpicking.GetValueInt() == 1
+            mcm.Apprentice_Training_Lockpicking.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Lockpicking_Toggle, false)
+        else
+            mcm.Apprentice_Training_Lockpicking.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Lockpicking_Toggle, true)
+        endIf
+    elseIf optionId == mcm.oid_TrainedSkills_Pickpocket_Toggle
+        if mcm.Apprentice_Training_Pickpocket.GetValueInt() == 1
+            mcm.Apprentice_Training_Pickpocket.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Pickpocket_Toggle, false)
+        else
+            mcm.Apprentice_Training_Pickpocket.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Pickpocket_Toggle, true)
         endIf
 
     ; Armor

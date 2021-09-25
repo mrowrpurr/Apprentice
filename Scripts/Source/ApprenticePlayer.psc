@@ -14,6 +14,9 @@ function Log(string text) global
     Debug.Trace("[Apprentice] " + text)
 endFunction
 
+; Perk with the Crafting Table and Lockpicking and other restrictions
+Perk property Apprentice_Restrictions_Perk auto
+
 ; Options - THESE 3 ARE NOT YET USED
 GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
@@ -46,18 +49,27 @@ GlobalVariable property Apprentice_Training_Smithing auto
 ; Block
 GlobalVariable property Apprentice_Training_Block auto
 
+; Lockpicking & Pickpocket
+GlobalVariable property Apprentice_Training_Lockpicking auto
+GlobalVariable property Apprentice_Training_Pickpocket auto
+
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
 
 ; Runs on initial mod installation
 event OnInit()
+    GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
 endEvent
 
 ; Runs on save game load
 event OnPlayerLoadGame()
+    Actor player = GetActorReference()
+    if ! player.HasPerk(Apprentice_Restrictions_Perk)
+        player.AddPerk(Apprentice_Restrictions_Perk)
+    endIf
     ListenForEvents()
 endEvent
 
@@ -176,6 +188,10 @@ event OnSkillIncrease(string skillName)
         Apprentice_Training_Enchanting.SetValueInt(1)
     elseIf skillName == "Smithing"
         Apprentice_Training_Smithing.SetValueInt(1)
+    elseIf skillName == "Lockpicking"
+        Apprentice_Training_Lockpicking.SetValueInt(1)
+    elseIf skillName == "Pickpocket"
+        Apprentice_Training_Pickpocket.SetValueInt(1)
     endIf
 endEvent
 
