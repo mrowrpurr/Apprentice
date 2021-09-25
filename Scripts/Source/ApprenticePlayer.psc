@@ -1,6 +1,9 @@
 Scriptname ApprenticePlayer extends ReferenceAlias  
 {This is the Apprentice player script.}
 
+; TODO - Update how we detect the spell school of magic.
+;        Use Spell.GetPerk()!
+
 ; TODO: TRACK TRAININGS FOR EACH SKILL VIA Books -vs- Training -vs- Total.
 ; We can make it so you need to be trained by trainer BEFORE book, for example.
 

@@ -59,14 +59,23 @@ int property oid_TrainedSkills_Pickpocket_Toggle auto
 
 event OnConfigInit()
     ModName = "Apprentice"
-    Pages = new string[1]
-    Pages[0] = "Trained Skills"
+    Pages = new string[2]
+    Pages[0] = "Settings"
+    Pages[1] = "Trained Skills"
+    ; Pages[0] = "Skills and Perks"
 endEvent
 
 event OnPageReset(string page)
+    if page == ""
+        LoadCustomContent("Apprentice\\Apprentice.dds")
+    else
+        UnloadCustomContent()
+    endIf
+
     if TrainingMenuOptionFlag == 0
         TrainingMenuOptionFlag = OPTION_FLAG_NONE
     endIf
+    ApprenticeMCM_Settings.Render(self, page)
     ApprenticeMCM_TrainedSkills.Render(self, page)
 endEvent
 

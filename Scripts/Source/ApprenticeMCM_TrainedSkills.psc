@@ -1,11 +1,12 @@
 scriptName ApprenticeMCM_TrainedSkills hidden
 
 function Render(ApprenticeMCM mcm, string page) global
-    mcm.SetTitleText("Trained Skills")
-    mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
-    LeftColumn(mcm)
-    mcm.SetCursorPosition(1)
-    RightColumn(mcm)
+    if page == "Trained Skills"
+        mcm.SetCursorFillMode(mcm.TOP_TO_BOTTOM)
+        LeftColumn(mcm)
+        mcm.SetCursorPosition(1)
+        RightColumn(mcm)
+    endIf
 endFunction
 
 function LeftColumn(ApprenticeMCM mcm) global
@@ -47,7 +48,6 @@ function MagicSkills(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Magic Skills")
     mcm.oid_TrainedSkills_Magic_Alchemy_Toggle = mcm.AddToggleOption("Alchemy", mcm.Apprentice_Training_Alchemy.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
     mcm.oid_TrainedSkills_Magic_Enchanting_Toggle = mcm.AddToggleOption("Enchanting", mcm.Apprentice_Training_Enchanting.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
-    mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.TrainingMenuOptionFlag)
 endFunction
 
 function Magic(ApprenticeMCM mcm) global
@@ -188,15 +188,6 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Alchemy_Toggle, true)
         endIf
 
-    elseIf optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
-        if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
-            mcm.Apprentice_Training_Enchanting.SetValueInt(0)
-            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, false)
-        else
-            mcm.Apprentice_Training_Enchanting.SetValueInt(1)
-            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, true)
-        endIf
-
     ; Magic
     elseIf optionId == mcm.oid_TrainedSkills_Magic_Alteration_Toggle
         if mcm.Apprentice_Training_Alteration.GetValueInt() == 1
@@ -246,11 +237,8 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
 endFunction
 
 function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
-    ; Settings
-    if optionId == mcm.oid_Settings_RestrictEnchantedItemUsage
-        mcm.SetInfoText("Toggle Restriction of Enchanted Item Usage (when enabled, you must be trained in the magic skill(s) of the associated item enchantment)")
     ; Armor
-    elseIf optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
+    if optionId == mcm.oid_TrainedSkills_Armor_LightArmor_Toggle
         mcm.SetInfoText("Toggle Training in Light Armor (required to equip light armor)")
     elseIf optionId == mcm.oid_TrainedSkills_Armor_HeavyArmor_Toggle
         mcm.SetInfoText("Toggle Training in Heavy Armor (required to equip heavy armor)")
