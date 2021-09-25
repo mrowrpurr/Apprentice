@@ -78,38 +78,8 @@ endEvent
 ; and the Inventory Menu (when you close it, we unequip items you tried to equip you're untrained in)
 ;                        (we don't do it immediately else it crashes SkyUI, fun times, fun times...)
 function ListenForEvents()
-    RegisterForMenu("Crafting Menu")
     RegisterForMenu("InventoryMenu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
-endFunction
-
-; Close the currently open crafting menu
-function CloseCraftingMenu(int times = 2)
-    ; Seems to require two invocations for me sometimes, so default to invoking the closing twice
-    int i = 0
-    while i < times
-        UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
-        i += 1
-    endWhile
-endFunction
-
-; Gets the description text of the menu.
-; This **REQUIRES** the tweaked `craftingmenu.swf` (which **REQUIRES** SkyUI)
-string function GetOpenCraftingMenuName()
-    return UI.GetString("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.MenuDescription.text")
-endFunction
-
-; Simply presses 'Enter' to close out of the Alchemy menu which has its own Quit Menu dialog.
-; To close the Alchemy menu, we tap it a few times to make sure it works.
-function TapEnterKey(int times = 1, float waitTime = 0.1)
-    int i = 0
-    while i < times
-        Input.TapKey(28) ; Enter Key
-        if waitTime
-            Utility.WaitMenuMode(waitTime)
-        endIf
-        i += 1
-    endWhile
 endFunction
 
 ; Watch for Crafting Menu to open. Close it if you're not trained in the appropriate skill (Alchemy, Enchanting, Smithing)
@@ -121,28 +91,6 @@ event OnMenuOpen(string menuName)
         IsBookMenuOpen = true
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
-    elseIf menuName == "Crafting Menu"
-        string description = GetOpenCraftingMenuName()
-        if description
-            Log("Opened Crafting Menu: " + description)
-            if Apprentice_Training_Alchemy.GetValueInt() != 1 && StringUtil.Find(description, "Alchemy") > -1
-                CloseCraftingMenu()
-                TapEnterKey(times = 4)
-                Debug.MessageBox("You need to train in Alchemy before you can use an Alchemy table")
-
-            elseIf Apprentice_Training_Enchanting.GetValueInt() != 1 && StringUtil.Find(description, "Enchanting") > -1
-                CloseCraftingMenu()
-                Utility.WaitMenuMode(0.1)
-                Debug.MessageBox("You need to train in Enchanting before you can use an Enchanting table")
-                
-            elseIf Apprentice_Training_Smithing.GetValueInt() == 0 && (StringUtil.Find(description, "Tanning Rack") > -1 || StringUtil.Find(description, "Blacksmith Forge") > -1 || StringUtil.Find(description, "Weapon Smithing") > -1 || StringUtil.Find(description, "Armor Smithing") > -1 || StringUtil.Find(description, "Smelter") > -1)
-                CloseCraftingMenu()
-                Utility.WaitMenuMode(0.1)
-                Debug.MessageBox("You need to train in Smithing before you can use this")
-            endIf
-        else
-            Log("Opened Crafting Menu: UNKNOWN. Couldn't detect name of crafting station, is our craftingmenu.swf overriden by another mod?")
-        endIf
     endIf
 endEvent
 
