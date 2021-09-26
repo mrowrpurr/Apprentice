@@ -180,3 +180,63 @@ string[] function GetPlayerInventoryItemNamesNotAlreadyOnAllowlist()
 
     return itemNames
 endFunction
+
+string[] function GetPlayerSpellNamesNotAlreadyOnAllowlist()
+    ApprenticePlayer playerScript = GetPlayerScript()
+    Form[] currentlyAllowedSpells = playerScript.AllowedSpells
+
+    Actor player = Game.GetPlayer()
+    ActorBase base = player.GetActorBase()
+    Race theRace = player.GetRace()
+    int spellCount = player.GetSpellCount()
+    int baseSpellCount = base.GetSpellCount()
+    int racialSpellCount = theRace.GetSpellCount()
+    int fullSpellCount = spellCount + baseSpellCount + racialSpellCount
+    
+    string[] spellNames = Utility.CreateStringArray(fullSpellCount)
+    Allowlist_Spells_Cache = Utility.CreateFormArray(fullSpellCount)
+
+    int i = 0
+    int spellIndex = 0
+    while i < spellCount
+        Form theForm = player.GetNthSpell(i)
+        if ! currentlyAllowedSpells || currentlyAllowedSpells.Find(theForm) == -1
+            spellNames[spellIndex] = theForm.GetName()
+            Allowlist_Spells_Cache[spellIndex] = theForm
+            spellIndex += 1
+        endIf
+        i += 1
+    endWhile
+
+    i = 0
+    while i < baseSpellCount
+        Form theForm = base.GetNthSpell(i)
+        if ! currentlyAllowedSpells || currentlyAllowedSpells.Find(theForm) == -1
+            spellNames[spellIndex] = theForm.GetName()
+            Allowlist_Spells_Cache[spellIndex] = theForm
+            spellIndex += 1
+        endIf
+        i += 1
+    endWhile
+
+    i = 0
+    while i < racialSpellCount
+        Form theForm = theRace.GetNthSpell(i)
+        if ! currentlyAllowedSpells || currentlyAllowedSpells.Find(theForm) == -1
+            spellNames[spellIndex] = theForm.GetName()
+            Allowlist_Spells_Cache[spellIndex] = theForm
+            spellIndex += 1
+        endIf
+        i += 1
+    endWhile
+
+    if spellNames.Length != spellIndex
+        spellNames = Utility.ResizeStringArray(spellNames, spellIndex)
+    endIf
+    
+    if Allowlist_Spells_Cache.Length != spellIndex
+        Allowlist_Spells_Cache = Utility.ResizeFormArray(Allowlist_Spells_Cache, spellIndex)
+    endIf
+
+    return spellNames
+endFunction

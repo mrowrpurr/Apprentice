@@ -211,6 +211,16 @@ function AddAllowedItem(Form item)
     endIf
 endFunction
 
+function AddAllowedSpell(Form theSpell)
+    if AllowedSpells
+        AllowedSpells = Utility.ResizeFormArray(AllowedSpells, AllowedSpells.Length + 1)
+        AllowedSpells[AllowedSpells.Length - 1] = theSpell
+    else
+        AllowedSpells = new Form[1]
+        AllowedSpells[0] = theSpell
+    endIf
+endFunction
+
 ; Debug.MessageBox("You are not trained in Alteration magic.\n\nYou cannot equip " + enchantedItem.GetName() + " until you are trained in Alteration.")
 function ShowEnchantingRequiredMessage(Form item, Enchantment theEnchantment)
     bool alterationMissing  = Apprentice_Training_Alteration.GetValueInt()  == 0 && EnchantmentRequiresMagicSkill(theEnchantment, "Alteration")
@@ -259,7 +269,7 @@ float lastSelectedScrollAt
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
-    if AllowedItems.Find(object) > -1
+    if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1
         return
     endIf
 
