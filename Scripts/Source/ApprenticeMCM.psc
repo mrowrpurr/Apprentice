@@ -83,12 +83,19 @@ int property oid_Skills_Enchanting_Slider auto
 int property oid_Skills_Speechcraft_Slider auto
 int property oid_Skills_Sneak_Slider auto
 
+; Allowlist Options
+int property oid_Allowlist_Spells_Menu auto
+int property oid_Allowlist_Items_Menu auto
+Form[] property Allowlist_Spells_Cache auto ; These are used to
+Form[] property Allowlist_Items_Cache auto ; manage the menus
+
 event OnConfigInit()
     ModName = "Apprentice"
-    Pages = new string[3]
+    Pages = new string[4]
     Pages[0] = "Settings"
     Pages[1] = "Trained Skills"
     Pages[2] = "Skill Levels"
+    Pages[3] = ApprenticeMCM_ItemSpellAllowlist.PageName()
 endEvent
 
 event OnPageReset(string page)
@@ -104,6 +111,7 @@ event OnPageReset(string page)
     ApprenticeMCM_Settings.Render(self, page)
     ApprenticeMCM_TrainedSkills.Render(self, page)
     ApprenticeMCM_SkillLevels.Render(self, page)
+    ApprenticeMCM_ItemSpellAllowlist.Render(self, page)
 endEvent
 
 event OnOptionSelect(int optionId)
@@ -114,6 +122,7 @@ endEvent
 event OnOptionHighlight(int optionId)
     ApprenticeMCM_Settings.OnOptionHighlight(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionHighlight(self, optionId)
+    ApprenticeMCM_ItemSpellAllowlist.OnOptionHighlight(self, optionId)
 endEvent
 
 event OnOptionSliderOpen(int optionId)
@@ -123,3 +132,51 @@ endEvent
 event OnOptionSliderAccept(int optionId, float value)
     ApprenticeMCM_SkillLevels.OnOptionSliderAccept(self, optionId, value)
 endEvent
+
+event OnOptionMenuOpen(int optionId)
+    ApprenticeMCM_ItemSpellAllowlist.OnOptionMenuOpen(self, optionId)
+endEvent
+
+event OnOptionMenuAccept(int optionId, int index)
+    ApprenticeMCM_ItemSpellAllowlist.OnOptionMenuAccept(self, optionId, index)
+endEvent
+
+ApprenticePlayer function GetPlayerScript()
+    return GetAliasByName("PlayerRef") as ApprenticePlayer
+endFunction
+
+string[] function GetPlayerInventoryItemNamesNotAlreadyOnAllowlist()
+    ApprenticePlayer playerScript = GetPlayerScript()
+    Form[] currentlyAllowedItems = playerScript.AllowedItems
+
+    Actor player = Game.GetPlayer()
+    int itemCount = player.GetNumItems()
+    
+    string[] itemNames = Utility.CreateStringArray(itemCount)
+    Allowlist_Items_Cache = Utility.CreateFormArray(itemCount)
+
+    int i = 0
+    int itemIndex = 0
+    while i < itemCount
+        Form   theForm   = player.GetNthForm(i)
+        Weapon theWeapon = theForm as Weapon
+        Scroll theScroll = theForm as Scroll
+        Armor  theAmor   = theForm as Armor
+        bool validType   = theWeapon || theScroll || theAmor
+        if validType && (! currentlyAllowedItems || currentlyAllowedItems.Find(theForm) == -1)
+            itemNames[itemIndex] = theForm.GetName()
+            Allowlist_Items_Cache[itemIndex] = theForm
+            itemIndex += 1
+        endIf
+        i += 1
+    endWhile
+
+    if itemNames.Length != itemIndex
+        itemNames = Utility.ResizeStringArray(itemNames, itemIndex)
+    endIf
+    if Allowlist_Items_Cache.Length != itemIndex
+        Allowlist_Items_Cache = Utility.ResizeFormArray(Allowlist_Items_Cache, itemIndex)
+    endIf
+
+    return itemNames
+endFunction

@@ -65,6 +65,10 @@ GlobalVariable property Apprentice_Training_Block auto
 GlobalVariable property Apprentice_Training_Lockpicking auto
 GlobalVariable property Apprentice_Training_Pickpocket auto
 
+; Track Spells and Items on Allowlists
+Form[] property AllowedSpells auto
+Form[] property AllowedItems  auto
+
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
@@ -197,6 +201,16 @@ function UnequipAllItemsWhichShouldBeUnequipped()
     endIf
 endFunction
 
+function AddAllowedItem(Form item)
+    if AllowedItems
+        AllowedItems = Utility.ResizeFormArray(AllowedItems, AllowedItems.Length + 1)
+        AllowedItems[AllowedItems.Length - 1] = item
+    else
+        AllowedItems = new Form[1]
+        AllowedItems[0] = item
+    endIf
+endFunction
+
 ; Debug.MessageBox("You are not trained in Alteration magic.\n\nYou cannot equip " + enchantedItem.GetName() + " until you are trained in Alteration.")
 function ShowEnchantingRequiredMessage(Form item, Enchantment theEnchantment)
     bool alterationMissing  = Apprentice_Training_Alteration.GetValueInt()  == 0 && EnchantmentRequiresMagicSkill(theEnchantment, "Alteration")
@@ -245,6 +259,10 @@ float lastSelectedScrollAt
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
+    if AllowedItems.Find(object) > -1
+        return
+    endIf
+
     Weapon theWeapon = object as Weapon
     Spell theSpell   = object as Spell
     Scroll theScroll = object as Scroll
