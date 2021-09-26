@@ -40,6 +40,11 @@ function RightColumn(ApprenticeMCM mcm) global
 endFunction
 
 function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
+    if optionId == mcm.oid_Allowlist_Items_Menu
+        mcm.SetInfoText("Choose an item from your inventory to mark as always allowed, regardless of whether you are trained in the required skill(s).")
+    elseIf optionId == mcm.oid_Allowlist_Spells_Menu
+        mcm.SetInfoText("Choose a spell you know to mark as always allowed, regardless of whether you are trained in the required skill(s).")
+    endIf
 endFunction
 
 function OnOptionMenuOpen(ApprenticeMCM mcm, int optionId) global
