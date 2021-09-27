@@ -15,13 +15,12 @@ function LeftColumn(ApprenticeMCM mcm) global
     mcm.oid_LockMenu = mcm.AddTextOption("", "Click here to lock this menu")
     mcm.AddEmptyOption()
     StartingCharacterStats(mcm)
-    ; mcm.AddHeaderOption("Settings")
-    ; mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1)
-    ; mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Settings")
+    mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Allow Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function StartingCharacterStats(ApprenticeMCM mcm) global
@@ -44,12 +43,7 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
 
     if optionId == mcm.oid_StartingCharacter_ResetSkillsToZero
         ResetAllSkillsToZero(mcm)
-    endIf
-
-    ; TODO ADD THESE OPTIONS BACK:
-
-    ; Magic Enchanting
-    if optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
+    elseIf optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
         if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
             mcm.Apprentice_Training_Enchanting.SetValueInt(0)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, false)
