@@ -1,6 +1,9 @@
 Scriptname ApprenticePlayer extends ReferenceAlias  
 {This is the Apprentice player script.}
 
+; TODO - Update how we detect the spell school of magic.
+;        Use Spell.GetPerk()!
+
 ; TODO: TRACK TRAININGS FOR EACH SKILL VIA Books -vs- Training -vs- Total.
 ; We can make it so you need to be trained by trainer BEFORE book, for example.
 
@@ -14,17 +17,29 @@ function Log(string text) global
     Debug.Trace("[Apprentice] " + text)
 endFunction
 
+; Perk with the Crafting Table and Lockpicking and other restrictions
+Perk property Apprentice_Restrictions_Perk auto
+
 ; Options - THESE 3 ARE NOT YET USED
 GlobalVariable property Apprentice_ModEnabled auto
-GlobalVariable property Apprentice_Settings_DropOnEquip auto
+GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+
+; Training Tracking
+;
+; 0 - Untrained
+; 1 - Trained 25
+; 2 - Trained 50
+; 3 - Trained 75
 
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
 GlobalVariable property Apprentice_Training_LightArmor auto
 
 ; Weapons
+Keyword property WeapTypeDagger auto
+GlobalVariable property Apprentice_Training_Daggers auto
 GlobalVariable property Apprentice_Training_OneHanded auto
 GlobalVariable property Apprentice_Training_TwoHanded auto
 GlobalVariable property Apprentice_Training_Marksman auto
@@ -46,18 +61,31 @@ GlobalVariable property Apprentice_Training_Smithing auto
 ; Block
 GlobalVariable property Apprentice_Training_Block auto
 
+; Lockpicking & Pickpocket
+GlobalVariable property Apprentice_Training_Lockpicking auto
+GlobalVariable property Apprentice_Training_Pickpocket auto
+
+; Track Spells and Items on Allowlists
+Form[] property AllowedSpells auto
+Form[] property AllowedItems  auto
+
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
 
 ; Runs on initial mod installation
 event OnInit()
+    GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
 endEvent
 
 ; Runs on save game load
 event OnPlayerLoadGame()
+    Actor player = GetActorReference()
+    if ! player.HasPerk(Apprentice_Restrictions_Perk)
+        player.AddPerk(Apprentice_Restrictions_Perk)
+    endIf
     ListenForEvents()
 endEvent
 
@@ -66,38 +94,10 @@ endEvent
 ; and the Inventory Menu (when you close it, we unequip items you tried to equip you're untrained in)
 ;                        (we don't do it immediately else it crashes SkyUI, fun times, fun times...)
 function ListenForEvents()
-    RegisterForMenu("Crafting Menu")
     RegisterForMenu("InventoryMenu")
+    RegisterForMenu("Book Menu")
+    RegisterForMenu("Training Menu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
-endFunction
-
-; Close the currently open crafting menu
-function CloseCraftingMenu(int times = 2)
-    ; Seems to require two invocations for me sometimes, so default to invoking the closing twice
-    int i = 0
-    while i < times
-        UI.Invoke("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.onExitButtonPress")
-        i += 1
-    endWhile
-endFunction
-
-; Gets the description text of the menu.
-; This **REQUIRES** the tweaked `craftingmenu.swf` (which **REQUIRES** SkyUI)
-string function GetOpenCraftingMenuName()
-    return UI.GetString("Crafting Menu", "_global.CraftingMenu.CraftingMenuInstance.MenuDescription.text")
-endFunction
-
-; Simply presses 'Enter' to close out of the Alchemy menu which has its own Quit Menu dialog.
-; To close the Alchemy menu, we tap it a few times to make sure it works.
-function TapEnterKey(int times = 1, float waitTime = 0.1)
-    int i = 0
-    while i < times
-        Input.TapKey(28) ; Enter Key
-        if waitTime
-            Utility.WaitMenuMode(waitTime)
-        endIf
-        i += 1
-    endWhile
 endFunction
 
 ; Watch for Crafting Menu to open. Close it if you're not trained in the appropriate skill (Alchemy, Enchanting, Smithing)
@@ -109,28 +109,6 @@ event OnMenuOpen(string menuName)
         IsBookMenuOpen = true
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
-    elseIf menuName == "Crafting Menu"
-        string description = GetOpenCraftingMenuName()
-        if description
-            Log("Opened Crafting Menu: " + description)
-            if Apprentice_Training_Alchemy.GetValueInt() != 1 && StringUtil.Find(description, "Alchemy") > -1
-                CloseCraftingMenu()
-                TapEnterKey(times = 4)
-                Debug.MessageBox("You need to train in Alchemy before you can use an Alchemy table")
-
-            elseIf Apprentice_Training_Enchanting.GetValueInt() != 1 && StringUtil.Find(description, "Enchanting") > -1
-                CloseCraftingMenu()
-                Utility.WaitMenuMode(0.1)
-                Debug.MessageBox("You need to train in Enchanting before you can use an Enchanting table")
-                
-            elseIf Apprentice_Training_Smithing.GetValueInt() == 0 && (StringUtil.Find(description, "Tanning Rack") > -1 || StringUtil.Find(description, "Blacksmith Forge") > -1 || StringUtil.Find(description, "Weapon Smithing") > -1 || StringUtil.Find(description, "Armor Smithing") > -1 || StringUtil.Find(description, "Smelter") > -1)
-                CloseCraftingMenu()
-                Utility.WaitMenuMode(0.1)
-                Debug.MessageBox("You need to train in Smithing before you can use this")
-            endIf
-        else
-            Log("Opened Crafting Menu: UNKNOWN. Couldn't detect name of crafting station, is our craftingmenu.swf overriden by another mod?")
-        endIf
     endIf
 endEvent
 
@@ -149,7 +127,10 @@ endEvent
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
-    Log("Skill Increased: " + skillName)
+    if Apprentice_Settings_TrainFromBooks.GetValueInt() == 0
+        return
+    endIf
+
     if skillName == "OneHanded"
         Apprentice_Training_OneHanded.SetValueInt(1)
     elseIf skillName == "TwoHanded"
@@ -176,12 +157,18 @@ event OnSkillIncrease(string skillName)
         Apprentice_Training_Enchanting.SetValueInt(1)
     elseIf skillName == "Smithing"
         Apprentice_Training_Smithing.SetValueInt(1)
+    elseIf skillName == "Lockpicking"
+        Apprentice_Training_Lockpicking.SetValueInt(1)
+    elseIf skillName == "Pickpocket"
+        Apprentice_Training_Pickpocket.SetValueInt(1)
     endIf
 endEvent
 
 ; Tracks all items to unequip, see AddItemToUnequipOnMenuClose and UnequipAllItemsWhichShouldBeUnequipped
 Form[] _itemsToUnequip
 
+; TODO - UNEQUIP ALL IMMEDIATELY EXPECT ... ARMOR? Whichever one CTDs
+;
 ; If you try to equip an item which you cannot, this queues it up to be unequipped as soon as the Inventory menu closes.
 ; We only do this because, if you unequip immediately SkyUI has a lovely tendency to crash :)
 function AddItemToUnequipOnMenuClose(Form item)
@@ -211,6 +198,26 @@ function UnequipAllItemsWhichShouldBeUnequipped()
             i += 1
         endWhile
         _itemsToUnequip = Utility.CreateFormArray(0) ; Hack to keep Papyrus Log Warning from showing up (when you set it = None instead)
+    endIf
+endFunction
+
+function AddAllowedItem(Form item)
+    if AllowedItems
+        AllowedItems = Utility.ResizeFormArray(AllowedItems, AllowedItems.Length + 1)
+        AllowedItems[AllowedItems.Length - 1] = item
+    else
+        AllowedItems = new Form[1]
+        AllowedItems[0] = item
+    endIf
+endFunction
+
+function AddAllowedSpell(Form theSpell)
+    if AllowedSpells
+        AllowedSpells = Utility.ResizeFormArray(AllowedSpells, AllowedSpells.Length + 1)
+        AllowedSpells[AllowedSpells.Length - 1] = theSpell
+    else
+        AllowedSpells = new Form[1]
+        AllowedSpells[0] = theSpell
     endIf
 endFunction
 
@@ -262,6 +269,10 @@ float lastSelectedScrollAt
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
+    if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1
+        return
+    endIf
+
     Weapon theWeapon = object as Weapon
     Spell theSpell   = object as Spell
     Scroll theScroll = object as Scroll
@@ -313,8 +324,14 @@ event OnObjectEquipped(Form object, ObjectReference instance)
     if theWeapon
         string skillName = theWeapon.GetSkill()
         if skillName == "OneHanded" && Apprentice_Training_OneHanded.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
-            AddItemToUnequipOnMenuClose(theWeapon)
+            if theWeapon.HasKeyword(WeapTypeDagger) && Apprentice_Training_Daggers.GetValueInt() != 0
+                ; Trained in Daggers and this is a dagger
+                ; So do nothing
+            else
+                Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
+                AddItemToUnequipOnMenuClose(theWeapon)
+                ; GetActorReference().UnequipItem(theWeapon)
+            endIf            
         elseIf skillName == "TwoHanded" && Apprentice_Training_TwoHanded.GetValueInt() == 0
             Debug.MessageBox("You are not trained in Two-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Two-Handed weapon.")
             AddItemToUnequipOnMenuClose(theWeapon)
