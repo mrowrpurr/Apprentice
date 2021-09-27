@@ -68,6 +68,7 @@ GlobalVariable property Apprentice_Training_Pickpocket auto
 ; Track Spells and Items on Allowlists
 Form[] property AllowedSpells auto
 Form[] property AllowedItems  auto
+string[] property AllowedNames auto
 
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
@@ -201,6 +202,16 @@ function UnequipAllItemsWhichShouldBeUnequipped()
     endIf
 endFunction
 
+function AddAllowedFilter(string text)
+    if AllowedNames
+        AllowedNames = Utility.ResizeStringArray(AllowedNames, AllowedNames.Length + 1)
+        AllowedNames[AllowedNames.Length - 1] = text
+    else
+        AllowedNames = new string[1]
+        AllowedNames[0] = text
+    endIf
+endFunction
+
 function AddAllowedItem(Form item)
     if AllowedItems
         AllowedItems = Utility.ResizeFormArray(AllowedItems, AllowedItems.Length + 1)
@@ -266,10 +277,25 @@ endFunction
 Scroll lastSelectedScroll
 float lastSelectedScrollAt
 
+bool function IsAllowedItemName(string name)
+    if AllowedNames
+        int i = 0
+        while i < AllowedNames.Length
+            if StringUtil.Find(name, AllowedNames[i]) > -1
+                return true
+            endIf
+            i += 1
+        endWhile
+        return false
+    else
+        return false
+    endIf
+endFunction
+
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
-    if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1
+    if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1 || IsAllowedItemName(object.GetName())
         return
     endIf
 

@@ -92,6 +92,7 @@ int property oid_Skills_Sneak_Slider auto
 ; Allowlist Options
 int property oid_Allowlist_Spells_Menu auto
 int property oid_Allowlist_Items_Menu auto
+int property oid_Allowlist_Names_Input auto
 Form[] property Allowlist_Spells_Cache auto ; These are used to
 Form[] property Allowlist_Items_Cache auto ; manage the menus
 
@@ -147,6 +148,10 @@ endEvent
 
 event OnOptionMenuAccept(int optionId, int index)
     ApprenticeMCM_ItemSpellAllowlist.OnOptionMenuAccept(self, optionId, index)
+endEvent
+
+event OnOptionInputAccept(int optionId, string text)
+    ApprenticeMCM_ItemSpellAllowlist.OnOptionInputAccept(self, optionId, text)
 endEvent
 
 ApprenticePlayer function GetPlayerScript()

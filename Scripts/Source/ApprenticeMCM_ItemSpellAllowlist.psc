@@ -24,6 +24,18 @@ function LeftColumn(ApprenticeMCM mcm) global
             i += 1
         endWhile
     endIf
+
+    mcm.AddEmptyOption()
+    mcm.AddHeaderOption("Allowed Item and Spell Name Filters")
+    mcm.oid_Allowlist_Names_Input = mcm.AddInputOption("Allowed Filter:", "INPUT TEXT")
+    string[] allowedTexts = mcm.GetPlayerScript().AllowedNames
+    if allowedTexts
+        int i = 0
+        while i < allowedTexts.Length
+            mcm.AddTextOption(allowedTexts[i], "")
+            i += 1
+        endWhile
+    endIf
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
@@ -62,12 +74,15 @@ function OnOptionMenuAccept(ApprenticeMCM mcm, int optionId, int index) global
     if optionId == mcm.oid_Allowlist_Items_Menu
         mcm.GetPlayerScript().AddAllowedItem(mcm.Allowlist_Items_Cache[index])
         mcm.ForcePageReset()
-        ; TODO maybe add the item properly :)
-        ; which will involve moving the MCM cursor to the right spot
     elseIf optionId == mcm.oid_Allowlist_Spells_Menu
         mcm.GetPlayerScript().AddAllowedSpell(mcm.Allowlist_Spells_Cache[index])
         mcm.ForcePageReset()
-        ; TODO maybe add the spell properly :)
-        ; which will involve moving the MCM cursor to the right spot
+    endIf
+endFunction
+
+function OnOptionInputAccept(ApprenticeMCM mcm, int optionId, string text) global
+    if optionId == mcm.oid_Allowlist_Names_Input
+        mcm.GetPlayerScript().AddAllowedFilter(text)
+        mcm.ForcePageReset()
     endIf
 endFunction
