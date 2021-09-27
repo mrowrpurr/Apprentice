@@ -336,7 +336,7 @@ event OnObjectEquipped(Form object, ObjectReference instance)
             Debug.MessageBox("You are not trained in Two-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Two-Handed weapon.")
             AddItemToUnequipOnMenuClose(theWeapon)
         elseIf skillName == "Marksman" && Apprentice_Training_Marksman.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Archery.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Archery weapon.")
+            Debug.MessageBox("You are not trained in Archery.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Archery.")
             AddItemToUnequipOnMenuClose(theWeapon)
         endIf
     elseIf theSpell
