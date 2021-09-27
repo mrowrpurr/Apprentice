@@ -10,9 +10,16 @@ GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
 int property oid_LockMenu auto
+int property LockableOptionFlag auto
 int property oid_Settings_RestrictEnchantedItemUsage auto
 int property oid_Settings_TrainFromBooks_Toggle auto
-int property LockableOptionFlag auto
+int property oid_StartingCharacter_PerkPoints_Slider auto
+int property oid_StartingCharacter_Level_Slider auto
+int property oid_StartingCharacter_Magicka_Slider auto
+int property oid_StartingCharacter_Health_Slider auto
+int property oid_StartingCharacter_Stamina_Slider auto
+int property oid_StartingCharacter_CarryWeight_Slider auto
+int property oid_StartingCharacter_ResetSkillsToZero auto
 
 ; Armor
 GlobalVariable property Apprentice_Training_HeavyArmor auto
@@ -62,8 +69,7 @@ GlobalVariable property Apprentice_Training_Pickpocket auto
 int property oid_TrainedSkills_Lockpicking_Toggle auto
 int property oid_TrainedSkills_Pickpocket_Toggle auto
 
-; Perks and Skills
-int property oid_AvailablePerkCount_Slider auto
+; Skills
 int property oid_Skills_LightArmor_Slider auto
 int property oid_Skills_HeavyArmor_Slider auto
 int property oid_Skills_OneHanded_Slider auto
@@ -127,10 +133,12 @@ endEvent
 
 event OnOptionSliderOpen(int optionId)
     ApprenticeMCM_SkillLevels.OnOptionSliderOpen(self, optionId)
+    ApprenticeMCM_Settings.OnOptionSliderOpen(self, optionId)
 endEvent
 
 event OnOptionSliderAccept(int optionId, float value)
     ApprenticeMCM_SkillLevels.OnOptionSliderAccept(self, optionId, value)
+    ApprenticeMCM_Settings.OnOptionSliderAccept(self, optionId, value)
 endEvent
 
 event OnOptionMenuOpen(int optionId)

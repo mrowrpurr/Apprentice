@@ -22,15 +22,6 @@ function RightColumn(ApprenticeMCM mcm) global
     MagicSkills(mcm)
 endFunction
 
-; function LockAllOptions(ApprenticeMCM mcm) global
-;     mcm.oid_Settings_LockSkillLevelsMenu = mcm.AddTextOption("", "Click here to lock these options")
-; endFunction
-
-function PerkPoints(ApprenticeMCM mcm) global
-    mcm.AddHeaderOption("Perks Points")
-    mcm.oid_AvailablePerkCount_Slider = mcm.AddSliderOption("Points Available", Game.GetPerkPoints(), a_flags = mcm.LockableOptionFlag)
-endFunction
-
 float function GetAV(string skillName) global
     return Game.GetPlayer().GetActorValue(skillName)
 endFunction
