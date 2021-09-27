@@ -125,6 +125,51 @@ event OnMenuClose(string menuName)
     endIf
 endEvent
 
+function SetSkillTrained(string skillName)
+    if ! IsSkillTrained(skillName)
+        Debug.Notification("You are now trained in " + skillName)
+    endIf
+    GetVariableForSkill(skillName).SetValueInt(1)
+endFunction
+
+bool function IsSkillTrained(string skillName)
+    return GetVariableForSkill(skillName).GetValueInt() == 1
+endFunction
+
+GlobalVariable function GetVariableForSkill(string skillName)
+    if skillName == "OneHanded"
+        return Apprentice_Training_OneHanded
+    elseIf skillName == "TwoHanded"
+        return Apprentice_Training_TwoHanded
+    elseIf skillName  == "Marksman"
+        return Apprentice_Training_Marksman
+    elseIf skillName == "HeavyArmor"
+        return Apprentice_Training_HeavyArmor
+    elseIf skillName == "LightArmor"
+        return Apprentice_Training_LightArmor
+    elseIf skillName == "Restoration"
+        return Apprentice_Training_Restoration
+    elseIf skillName == "Alteration"
+        return Apprentice_Training_Alteration
+    elseIf skillName == "Destruction"
+        return Apprentice_Training_Destruction
+    elseIf skillName == "Conjuration"
+        return Apprentice_Training_Conjuration
+    elseIf skillName == "Illusion"
+        return Apprentice_Training_Illusion
+    elseIf skillName == "Alchemy"
+        return Apprentice_Training_Alchemy
+    elseIf skillName == "Enchanting"
+        return Apprentice_Training_Enchanting
+    elseIf skillName == "Smithing"
+        return Apprentice_Training_Smithing
+    elseIf skillName == "Lockpicking"
+        return Apprentice_Training_Lockpicking
+    elseIf skillName == "Pickpocket"
+        return Apprentice_Training_Pickpocket
+    endIf
+endFunction
+
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
@@ -133,35 +178,35 @@ event OnSkillIncrease(string skillName)
     endIf
 
     if skillName == "OneHanded"
-        Apprentice_Training_OneHanded.SetValueInt(1)
+        SetSkillTrained("OneHanded")
     elseIf skillName == "TwoHanded"
-        Apprentice_Training_TwoHanded.SetValueInt(1)
+        SetSkillTrained("TwoHanded")
     elseIf skillName  == "Marksman"
-        Apprentice_Training_Marksman.SetValueInt(1)
+        SetSkillTrained("Marksman")
     elseIf skillName == "HeavyArmor"
-        Apprentice_Training_HeavyArmor.SetValueInt(1)
+        SetSkillTrained("HeavyArmor")
     elseIf skillName == "LightArmor"
-        Apprentice_Training_LightArmor.SetValueInt(1)
+        SetSkillTrained("LightArmor")
     elseIf skillName == "Restoration"
-        Apprentice_Training_Restoration.SetValueInt(1)
+        SetSkillTrained("Restoration")
     elseIf skillName == "Alteration"
-        Apprentice_Training_Alteration.SetValueInt(1)
+        SetSkillTrained("Alteration")
     elseIf skillName == "Destruction"
-        Apprentice_Training_Destruction.SetValueInt(1)
+        SetSkillTrained("Destruction")
     elseIf skillName == "Conjuration"
-        Apprentice_Training_Conjuration.SetValueInt(1)
+        SetSkillTrained("Conjuration")
     elseIf skillName == "Illusion"
-        Apprentice_Training_Illusion.SetValueInt(1)
+        SetSkillTrained("Illusion")
     elseIf skillName == "Alchemy"
-        Apprentice_Training_Alchemy.SetValueInt(1)
+        SetSkillTrained("Alchemy")
     elseIf skillName == "Enchanting"
-        Apprentice_Training_Enchanting.SetValueInt(1)
+        SetSkillTrained("Enchanting")
     elseIf skillName == "Smithing"
-        Apprentice_Training_Smithing.SetValueInt(1)
+        SetSkillTrained("Smithing")
     elseIf skillName == "Lockpicking"
-        Apprentice_Training_Lockpicking.SetValueInt(1)
+        SetSkillTrained("Lockpicking")
     elseIf skillName == "Pickpocket"
-        Apprentice_Training_Pickpocket.SetValueInt(1)
+        SetSkillTrained("Pickpocket")
     endIf
 endEvent
 
