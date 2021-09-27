@@ -37,7 +37,7 @@ EndFunction
 ;BEGIN FRAGMENT Fragment_5
 Function Fragment_5(ObjectReference akTargetRef, Actor akActor)
 ;BEGIN CODE
-Debug.MessageBox("You are not trained in Pickpocket.\n\nYou need to be trained in Pickpocket befure you can attempt to pickpocket.")
+Debug.MessageBox("You are not trained in Pickpocket.\n\nYou need to be trained in Pickpocket before you can attempt to pickpocket.")
 ;END CODE
 EndFunction
 ;END FRAGMENT
