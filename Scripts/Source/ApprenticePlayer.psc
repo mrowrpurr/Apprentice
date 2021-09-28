@@ -74,6 +74,43 @@ bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
 
+; Get the running instance of the ApprenticePlayer script from the main Apprentice quest
+ApprenticePlayer function GetInstance() global
+    return (Game.GetFormFromFile(0xd62, "Apprentice.esp") as Quest).GetAliasByName("PlayerRef") as ApprenticePlayer
+endFunction
+
+; Show a message to the Player
+; The MCM can configure this to be a Debug.MessageBox, a Debug.Notification, or no message.
+function ShowMessage(string text) global
+    int notificationOption = ApprenticePlayer.GetInstance().Apprentice_Settings_NotificationOption.GetValueInt()
+    if notificationOption == 1 ; MessageBox
+        Debug.MessageBox(text)
+    elseIf notificationOption == 2 ; Notification
+        Debug.Notification(text)
+    endIf
+endFunction
+
+; Resets all of the globals for whether you're trained in skills or not (used mostly by tests)
+function ResetAllTrainingStatus()
+    Apprentice_Training_HeavyArmor.SetValueInt(0)
+    Apprentice_Training_LightArmor.SetValueInt(0)
+    Apprentice_Training_Daggers.SetValueInt(0)
+    Apprentice_Training_OneHanded.SetValueInt(0)
+    Apprentice_Training_TwoHanded.SetValueInt(0)
+    Apprentice_Training_Marksman.SetValueInt(0)
+    Apprentice_Training_Alchemy.SetValueInt(0)
+    Apprentice_Training_Enchanting.SetValueInt(0)
+    Apprentice_Training_Alteration.SetValueInt(0)
+    Apprentice_Training_Conjuration.SetValueInt(0)
+    Apprentice_Training_Illusion.SetValueInt(0)
+    Apprentice_Training_Restoration.SetValueInt(0)
+    Apprentice_Training_Destruction.SetValueInt(0)
+    Apprentice_Training_Smithing.SetValueInt(0)
+    Apprentice_Training_Block.SetValueInt(0)
+    Apprentice_Training_Lockpicking.SetValueInt(0)
+    Apprentice_Training_Pickpocket.SetValueInt(0)
+endFunction
+
 ; Runs on initial mod installation
 event OnInit()
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
@@ -277,7 +314,7 @@ function AddAllowedSpell(Form theSpell)
     endIf
 endFunction
 
-; Debug.MessageBox("You are not trained in Alteration magic.\n\nYou cannot equip " + enchantedItem.GetName() + " until you are trained in Alteration.")
+; ApprenticePlayer.ShowMessage("You are not trained in Alteration magic.\n\nYou cannot equip " + enchantedItem.GetName() + " until you are trained in Alteration.")
 function ShowEnchantingRequiredMessage(Form item, Enchantment theEnchantment)
     bool alterationMissing  = Apprentice_Training_Alteration.GetValueInt()  == 0 && EnchantmentRequiresMagicSkill(theEnchantment, "Alteration")
     bool conjurationMissing = Apprentice_Training_Conjuration.GetValueInt() == 0 && EnchantmentRequiresMagicSkill(theEnchantment, "Conjuration")
@@ -316,7 +353,7 @@ function ShowEnchantingRequiredMessage(Form item, Enchantment theEnchantment)
         magicSkills += "Restoration"
     endIf
     string text = "You are not trained in " + magicSkills + "\n\nYou cannot use " + item.GetName() + " until you are trained in " + magicSkills + "."
-    Debug.MessageBox(text)
+    ApprenticePlayer.ShowMessage(text)
 endFunction
 
 Scroll lastSelectedScroll
@@ -399,67 +436,67 @@ event OnObjectEquipped(Form object, ObjectReference instance)
                 ; Trained in Daggers and this is a dagger
                 ; So do nothing
             else
-                Debug.MessageBox("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
+                ApprenticePlayer.ShowMessage("You are not trained in One-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in One-Handed weapons.")
                 AddItemToUnequipOnMenuClose(theWeapon)
                 ; GetActorReference().UnequipItem(theWeapon)
             endIf            
         elseIf skillName == "TwoHanded" && Apprentice_Training_TwoHanded.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Two-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Two-Handed weapon.")
+            ApprenticePlayer.ShowMessage("You are not trained in Two-Handed weapons.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Two-Handed weapon.")
             AddItemToUnequipOnMenuClose(theWeapon)
         elseIf skillName == "Marksman" && Apprentice_Training_Marksman.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Archery.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Archery.")
+            ApprenticePlayer.ShowMessage("You are not trained in Archery.\n\nYou cannot equip " + theWeapon.GetName() + " until you are trained in Archery.")
             AddItemToUnequipOnMenuClose(theWeapon)
         endIf
     elseIf theSpell
         if IsAlterationSpell(theSpell) && Apprentice_Training_Alteration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Alteration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Alteration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Alteration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Alteration.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         elseIf IsConjurationSpell(theSpell) && Apprentice_Training_Conjuration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Conjuration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Conjuration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Conjuration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Conjuration.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         elseIf IsDestructionSpell(theSpell) && Apprentice_Training_Destruction.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Destruction spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Destruction.")
+            ApprenticePlayer.ShowMessage("You are not trained in Destruction spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Destruction.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         elseIf IsIllusionSpell(theSpell) && Apprentice_Training_Illusion.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Illusion spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Illusion.")
+            ApprenticePlayer.ShowMessage("You are not trained in Illusion spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Illusion.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         elseIf IsRestorationSpell(theSpell) && Apprentice_Training_Restoration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Restoration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Restoration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Restoration spells.\n\nYou cannot cast " + theSpell.GetName() + " until you are trained in Restoration.")
             GetActorReference().UnequipSpell(theSpell, 0)
             GetActorReference().UnequipSpell(theSpell, 1)
         endIf
     elseIf theScroll
         if IsAlterationScroll(theScroll) && Apprentice_Training_Alteration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Alteration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Alteration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Alteration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Alteration.")
             AddItemToUnequipOnMenuClose(theScroll)
         elseIf IsConjurationScroll(theScroll) && Apprentice_Training_Conjuration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Conjuration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Conjuration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Conjuration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Conjuration.")
             AddItemToUnequipOnMenuClose(theScroll)
         elseIf IsDestructionScroll(theScroll) && Apprentice_Training_Destruction.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Destruction spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Destruction.")
+            ApprenticePlayer.ShowMessage("You are not trained in Destruction spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Destruction.")
             AddItemToUnequipOnMenuClose(theScroll)
         elseIf IsIllusionScroll(theScroll) && Apprentice_Training_Illusion.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Illusion spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Illusion.")
+            ApprenticePlayer.ShowMessage("You are not trained in Illusion spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Illusion.")
             AddItemToUnequipOnMenuClose(theScroll)
         elseIf IsRestorationScroll(theScroll) && Apprentice_Training_Restoration.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Restoration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Restoration.")
+            ApprenticePlayer.ShowMessage("You are not trained in Restoration spells.\n\nYou cannot use " + theScroll.GetName() + " until you are trained in Restoration.")
             AddItemToUnequipOnMenuClose(theScroll)
         endIf
     elseIf theArmor && IsArmor(theArmor)
         if theArmor.IsShield() && Apprentice_Training_Block.GetValueInt() == 0
-            Debug.MessageBox("You are not trained in Block.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Block.")
+            ApprenticePlayer.ShowMessage("You are not trained in Block.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Block.")
             AddItemToUnequipOnMenuClose(theArmor)
         else
             if IsHeavyArmor(theArmor) && Apprentice_Training_HeavyArmor.GetValueInt() == 0
-                Debug.MessageBox("You are not trained in Heavy Armor.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Heavy Armor.")
+                ApprenticePlayer.ShowMessage("You are not trained in Heavy Armor.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Heavy Armor.")
                 AddItemToUnequipOnMenuClose(theArmor)
                 ;;; GetActorReference().EquipItem(MostRecentlyWornArmor) ; TODO - let's try to re-equip whatever they were wearing in these slots
             elseIf IsLightArmor(theArmor) && Apprentice_Training_LightArmor.GetValueInt() == 0
-                Debug.MessageBox("You are not trained in Light Armor.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Light Armor.")
+                ApprenticePlayer.ShowMessage("You are not trained in Light Armor.\n\nYou cannot equip " + theArmor.GetName() + " until you are trained in Light Armor.")
                 AddItemToUnequipOnMenuClose(theArmor)
                 ;;; GetActorReference().EquipItem(MostRecentlyWornArmor) ; TODO - let's try to re-equip whatever they were wearing in these slots
             endIf

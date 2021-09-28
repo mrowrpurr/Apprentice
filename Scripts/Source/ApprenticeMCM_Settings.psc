@@ -15,6 +15,9 @@ function LeftColumn(ApprenticeMCM mcm) global
     mcm.oid_LockMenu = mcm.AddTextOption("", "Click here to lock this menu")
     mcm.AddEmptyOption()
     StartingCharacterStats(mcm)
+
+    ; TODO
+    ; mcm.ShowMessage()
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
