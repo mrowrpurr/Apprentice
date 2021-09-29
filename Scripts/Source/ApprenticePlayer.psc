@@ -70,6 +70,10 @@ Form[] property AllowedSpells auto
 Form[] property AllowedItems  auto
 string[] property AllowedNames auto
 
+; For testing
+bool property SaveShownMessages auto
+string[] property ShownMessages auto
+
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
@@ -88,6 +92,21 @@ function ShowMessage(string text) global
     elseIf notificationOption == 2 ; Notification
         Debug.Notification(text)
     endIf
+    ApprenticePlayer instance = GetInstance()
+    if instance.SaveShownMessages
+        if instance.ShownMessages
+            instance.ShownMessages = Utility.ResizeStringArray(instance.ShownMessages, instance.ShownMessages.Length + 1)
+            instance.ShownMessages[instance.ShownMessages.Length - 1] = text
+        else
+            instance.ShownMessages = new string[1]
+            instance.ShownMessages[0] = text
+        endIf
+    endIf
+endFunction
+
+; Clear messages used for testing (saves messages sent to ShowMessage())
+function ClearShownMessages()
+    ShownMessages = new string[1] ; Reset
 endFunction
 
 ; Resets all of the globals for whether you're trained in skills or not (used mostly by tests)
@@ -167,6 +186,10 @@ function SetSkillTrained(string skillName)
         Debug.Notification("You are now trained in " + skillName)
     endIf
     GetVariableForSkill(skillName).SetValueInt(1)
+endFunction
+
+function SetSkillUntrained(string skillName)
+    GetVariableForSkill(skillName).SetValueInt(0)
 endFunction
 
 bool function IsSkillTrained(string skillName)

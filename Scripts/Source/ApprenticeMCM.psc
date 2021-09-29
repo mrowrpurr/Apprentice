@@ -96,6 +96,10 @@ int property oid_Allowlist_Names_Input auto
 Form[] property Allowlist_Spells_Cache auto ; These are used to
 Form[] property Allowlist_Items_Cache auto ; manage the menus
 
+; Save Settings
+int property oid_SaveDefaultSettings auto
+int property oid_LoadDefaultSettings auto
+
 event OnConfigInit()
     ModName = "Apprentice"
     Pages = new string[4]
@@ -158,6 +162,14 @@ endEvent
 
 ApprenticePlayer function GetPlayerScript()
     return GetAliasByName("PlayerRef") as ApprenticePlayer
+endFunction
+
+float function GetAV(string skillName)
+    return PlayerRef.GetActorValue(skillName)
+endFunction
+
+function SetAV(string skillName, float value)
+    PlayerRef.SetActorValue(skillName, value)
 endFunction
 
 string[] function GetPlayerInventoryItemNamesNotAlreadyOnAllowlist()
@@ -254,4 +266,25 @@ string[] function GetPlayerSpellNamesNotAlreadyOnAllowlist()
     endIf
 
     return spellNames
+endFunction
+
+function SaveDefaultSettings()
+    int allSettings = JMap.object()
+    JValue.retain(allSettings)
+
+    int settings = JMap.object()
+    JMap.setObj(allSettings, "settings", settings)
+
+    int startingValues = JMap.object()
+    JMap.setObj(allSettings, "character", startingValues)
+
+    int training = JMap.object()
+    JMap.setObj(allSettings, "training", training)
+
+    JValue.writeToFile(allSettings, "Data\\Apprentice\\Defaults.json")
+    JValue.release(allSettings)
+endFunction
+
+function LoadDefaultSettings()
+
 endFunction
