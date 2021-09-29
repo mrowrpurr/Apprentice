@@ -16,7 +16,7 @@ function LeftColumn(ApprenticeMCM mcm) global
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
-    ; PerkPoints(mcm)
+    mcm.oid_StartingCharacter_ResetSkillsToZero = mcm.AddTextOption("", "Reset all starting skills to zero")
     LockpickingAndPickpocket(mcm)
     Magic(mcm)
     MagicSkills(mcm)
@@ -67,7 +67,6 @@ function Magic(ApprenticeMCM mcm) global
 endFunction
 
 function MagicSkills(ApprenticeMCM mcm) global
-    mcm.AddHeaderOption("Magic Skills")
     mcm.oid_Skills_Alchemy_Slider = mcm.AddSliderOption("Alchemy", GetAV("Alchemy"), a_flags = mcm.LockableOptionFlag)
     mcm.oid_Skills_Enchanting_Slider = mcm.AddSliderOption("Enchanting", GetAV("Enchanting"), a_flags = mcm.LockableOptionFlag)
 endFunction
@@ -189,6 +188,67 @@ function OnOptionSliderAccept(ApprenticeMCM mcm, int optionId, float value) glob
         mcm.SetSliderOptionValue(mcm.oid_Skills_Enchanting_Slider, value)
     endIf
 endFunction
+
+function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
+    if optionId == mcm.oid_StartingCharacter_ResetSkillsToZero
+        ResetAllSkillsToZero(mcm)
+    endIf
+endFunction
+
+function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
+    if optionId == mcm.oid_StartingCharacter_ResetSkillsToZero
+        mcm.SetInfoText("Sets all character skills to zero")
+    endIf
+endFunction
+
+function ResetAllSkillsToZero(ApprenticeMCM mcm) global
+    SetAV("Alteration", 0)
+    SetAV("Conjuration", 0)
+    SetAV("Destruction", 0)
+    SetAV("Illusion", 0)
+    SetAV("Restoration", 0)
+
+    SetAV("Alchemy", 0)
+    SetAV("Enchanting", 0)
+
+    SetAV("LightArmor", 0)
+    SetAV("HeavyArmor", 0)
+    SetAV("Block", 0)
+
+    SetAV("OneHanded", 0)
+    SetAV("TwoHanded", 0)
+    SetAV("Marksman", 0)
+
+    SetAV("Sneak", 0)
+    SetAV("Lockpicking", 0)
+    SetAV("Pickpocket", 0)
+
+    SetAV("Speechcraft", 0)
+    SetAV("Smithing", 0)
+
+    float value = 0.0
+    mcm.SetSliderOptionValue(mcm.oid_Skills_LightArmor_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_HeavyArmor_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_OneHanded_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_TwoHanded_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Marksman_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Smithing_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Block_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Sneak_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Speechcraft_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Lockpicking_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Pickpocket_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Alteration_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Conjuration_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Destruction_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Illusion_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Restoration_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Alchemy_Slider, value)
+    mcm.SetSliderOptionValue(mcm.oid_Skills_Enchanting_Slider, value)
+
+    mcm.SetTextOptionValue(mcm.oid_StartingCharacter_ResetSkillsToZero, "Updated all skills to zero!")
+endFunction
+
 
     ; if optionId == mcm.oid_AvailablePerkCount_Slider
     ;     int currentPoints = Game.GetPerkPoints()
