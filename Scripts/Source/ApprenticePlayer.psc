@@ -80,6 +80,7 @@ string[] property ShownMessages auto
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
+bool IsCraftingMenuOpen = false
 
 ; Get the running instance of the ApprenticePlayer script from the main Apprentice quest
 ApprenticePlayer function GetInstance() global
@@ -157,6 +158,7 @@ function ListenForEvents()
     RegisterForMenu("InventoryMenu")
     RegisterForMenu("Book Menu")
     RegisterForMenu("Training Menu")
+    RegisterForMenu("Crafting Menu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
 endFunction
 
@@ -169,6 +171,8 @@ event OnMenuOpen(string menuName)
         IsBookMenuOpen = true
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
+    elseIf menuName == "Crafting Menu"
+        IsCraftingMenuOpen = true
     endIf
 endEvent
 
@@ -181,6 +185,8 @@ event OnMenuClose(string menuName)
         IsBookMenuOpen = false
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = false
+    elseIf menuName == "Crafting Menu"
+        IsCraftingMenuOpen = false
     endIf
 endEvent
 
@@ -399,6 +405,16 @@ bool function IsAllowedItemName(string name)
         return false
     endIf
 endFunction
+
+event OnItemAdded(Form item, int count, ObjectReference akItemReference, ObjectReference akSourceContainer)
+    if IsCraftingMenuOpen
+        if Utility.RandomInt(1, 100) < 20
+            Debug.MessageBox("Nice crafting, dumbass! You fucked up.\n\n" + item.GetName() + " was destroyed in the process!")
+            GetActorReference().RemoveItem(item, count)
+            ; Debug.MessageBox("Whoops! You crafted " + item.GetName() + " incorrectly! It was destroyed in the process.")
+        endIf
+    endIf
+endEvent
 
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
