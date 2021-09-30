@@ -1,6 +1,9 @@
 Scriptname ApprenticePlayer extends ReferenceAlias  
 {This is the Apprentice player script.}
 
+; TODO - Make sure the ABILITIES for UNTRAINED SKILLS
+;        are all added EVEN FOR FOLKS WHO ALREADY HAVE THE MOD INSTALLED
+
 ; TODO - Update how we detect the spell school of magic.
 ;        Use Spell.GetPerk()!
 
@@ -400,6 +403,8 @@ endFunction
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
+    return ; While Testing...
+
     if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1 || IsAllowedItemName(object.GetName())
         return
     endIf
