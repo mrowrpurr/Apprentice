@@ -37,7 +37,12 @@ if theKey
         return
     endIf
 endIf
-ApprenticePlayer.ShowMessage("You are not trained in Lockpicking.\n\nYou need to be trained in Lockpicking before you can attempt to pick a lock.")
+
+akTargetRef.SetLockLevel(75)
+akTargetRef.Activate(akActor)
+
+; ApprenticePlayer.ShowMessage("You are not trained in Lockpicking.\n\nYou need to be trained in Lockpicking before you can attempt to pick a lock.")
+
 ;END CODE
 EndFunction
 ;END FRAGMENT

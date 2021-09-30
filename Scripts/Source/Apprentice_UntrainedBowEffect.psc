@@ -30,7 +30,6 @@ event OnUpdate()
     float newTiltUpAngle = f1PArrowTiltUpAngle + Utility.RandomFloat(-CurrentArrowTiltOffset, CurrentArrowTiltOffset)
     Utility.SetINIFloat("f1PArrowTiltUpAngle:Combat", newTiltUpAngle)
     CameraShakeStrength += 0.1
-    Debug.Notification(f1PArrowTiltUpAngle + " => " + newTiltUpAngle)
     CurrentArrowTiltOffset += 3.0
 endEvent
 
