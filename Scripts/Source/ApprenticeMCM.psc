@@ -9,6 +9,7 @@ GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+GlobalVariable property Apprentice_UseDebuffs auto
 int property oid_LockMenu auto
 int property LockableOptionFlag auto
 int property oid_Settings_RestrictEnchantedItemUsage auto
@@ -102,11 +103,12 @@ int property oid_LoadDefaultSettings auto
 
 event OnConfigInit()
     ModName = "Apprentice"
-    Pages = new string[4]
+    Pages = new string[5]
     Pages[0] = "Settings"
     Pages[1] = "Trained Skills"
-    Pages[2] = "Skill Levels"
-    Pages[3] = ApprenticeMCM_ItemSpellAllowlist.PageName()
+    Pages[2] = "Untrained Debuffs"
+    Pages[3] = "Skill Levels"
+    Pages[4] = ApprenticeMCM_ItemSpellAllowlist.PageName()
 endEvent
 
 event OnPageReset(string page)
@@ -121,6 +123,7 @@ event OnPageReset(string page)
     endIf
     ApprenticeMCM_Settings.Render(self, page)
     ApprenticeMCM_TrainedSkills.Render(self, page)
+    ApprenticeMCM_UntrainedDebuffs.Render(self, page)
     ApprenticeMCM_SkillLevels.Render(self, page)
     ApprenticeMCM_ItemSpellAllowlist.Render(self, page)
 endEvent

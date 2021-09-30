@@ -28,6 +28,7 @@ GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+GlobalVariable property Apprentice_UseDebuffs auto
 
 ; Training Tracking
 ;
@@ -173,7 +174,9 @@ event OnMenuOpen(string menuName)
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
     elseIf menuName == "Crafting Menu"
+        Debug.MessageBox("Crafting Menu Open")
         IsCraftingMenuOpen = true
+        RegisterForKey(19) ; "R"
     endIf
 endEvent
 
@@ -188,6 +191,7 @@ event OnMenuClose(string menuName)
         IsTrainingMenuOpen = false
     elseIf menuName == "Crafting Menu"
         IsCraftingMenuOpen = false
+        UnregisterForKey(19) ; "R"
     endIf
 endEvent
 
@@ -409,6 +413,12 @@ endFunction
 
 event OnItemAdded(Form item, int count, ObjectReference akItemReference, ObjectReference akSourceContainer)
     if IsCraftingMenuOpen
+        Enchantment theEnchantment
+        theEnchantment = akItemReference.GetEnchantment()
+        Debug.MessageBox(item)
+        Debug.MessageBox(akItemReference)
+        Debug.MessageBox(theEnchantment)
+
         if Utility.RandomInt(1, 100) < 20
             Debug.MessageBox("Nice crafting, dumbass! You fucked up.\n\n" + item.GetName() + " was destroyed in the process!")
             GetActorReference().RemoveItem(item, count)
@@ -417,10 +427,23 @@ event OnItemAdded(Form item, int count, ObjectReference akItemReference, ObjectR
     endIf
 endEvent
 
+event OnKeyDown(int keyCode)
+    if keyCode == 19 ; "R"
+        
+    endIf
+endEvent
+
+bool function UseDebuffs()
+    return Apprentice_UseDebuffs.GetValueInt() == 1
+endFunction
+
 ; Whenever the player equips an object, see if they are allowed to! If not, show a message and mark the item to be unequipped.
 ; Note: this is also used for Spells equipping via the magic menu (those spells are immediately unequipped)
 event OnObjectEquipped(Form object, ObjectReference instance)
-    return ; While Testing...
+    return ; 
+    if UseDebuffs()
+        return
+    endIf
 
     if AllowedItems.Find(object) > -1 || AllowedSpells.Find(object) > -1 || IsAllowedItemName(object.GetName())
         return

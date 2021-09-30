@@ -170,6 +170,14 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.Apprentice_Training_Alchemy.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Alchemy_Toggle, true)
         endIf
+    elseIf optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
+        if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
+            mcm.Apprentice_Training_Enchanting.SetValueInt(0)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, false)
+        else
+            mcm.Apprentice_Training_Enchanting.SetValueInt(1)
+            mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, true)
+        endIf
     ; Magic
     elseIf optionId == mcm.oid_TrainedSkills_Magic_Alteration_Toggle
         if mcm.Apprentice_Training_Alteration.GetValueInt() == 1

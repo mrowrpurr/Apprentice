@@ -3,6 +3,10 @@ scriptName Apprentice_UntrainedBowEffect extends ActiveMagicEffect
 
 ; TODO add support for the Wooden Sword and the Knife + Fork
 
+; TODO if untrained in Alchemy, chance of potions harming you
+; Maybe fall on the ground and lose all but 1 HP
+; And/Or maybe show the Drunk Effect and Drunk Movement for awhile
+
 ; TODO - Add a chance of being hit by your own arrow!
 
 ; TODO Power Attacks have a high change of player stagger
@@ -25,8 +29,8 @@ float StartingStamina
 event OnEffectStart(Actor target, Actor caster)
     Weapon leftHand = GetTargetActor().GetEquippedWeapon(abLeftHand = true)
     Weapon rightHand = GetTargetActor().GetEquippedWeapon(abLeftHand = false)
+    UI.SetFloat("HUD Menu", "_root.HUDMovieBaseInstance.CrosshairInstance._alpha", 0.0)
     if (leftHand && leftHand.GetSkill() == "Marksman") || (rightHand && rightHand.GetSkill() == "Marksman")
-        UI.SetFloat("HUD Menu", "_root.HUDMovieBaseInstance.CrosshairInstance._alpha", 0.0)
         RegisterForUpdate(0.8)
         StartingStamina = GetTargetActor().GetActorValue("Stamina")
         f1PArrowTiltUpAngle = Utility.GetINIFloat("f1PArrowTiltUpAngle:Combat")
