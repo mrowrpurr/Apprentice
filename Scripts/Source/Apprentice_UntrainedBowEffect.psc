@@ -3,10 +3,17 @@ scriptName Apprentice_UntrainedBowEffect extends ActiveMagicEffect
 
 ; TODO - Add a chance of being hit by your own arrow!
 
+; TODO Power Attacks have a high change of player stagger
+;      and they have a higher chance of player hurting themselves
+
+; TODO If your attack is blocked, you take extra damage.
+
 ; Once you gain a certain amount of skill levels in a skill,
 ; THEN YOU UNLOCK THAT SKILL AND YOU BECOME TRAINED
 
 ; TODO - Second Effect for Stamina...
+
+Spell property Apprentice_StaggerSpell auto
 
 float CurrentArrowTiltOffset = 2.0
 float f1PArrowTiltUpAngle
@@ -21,6 +28,10 @@ event OnEffectStart(Actor target, Actor caster)
         RegisterForUpdate(0.8)
         StartingStamina = GetTargetActor().GetActorValue("Stamina")
         f1PArrowTiltUpAngle = Utility.GetINIFloat("f1PArrowTiltUpAngle:Combat")
+    else
+        if Utility.RandomInt(1, 100) < 20
+            Apprentice_StaggerSpell.Cast(GetTargetActor(), GetTargetActor())
+        endIf
     endIf
 endEvent
 
