@@ -1,6 +1,8 @@
 scriptName Apprentice_UntrainedBowEffect extends ActiveMagicEffect  
 {All of the effects when the player is untrained in Archery AND they are actively attacking}
 
+; TODO add support for the Wooden Sword and the Knife + Fork
+
 ; TODO - Add a chance of being hit by your own arrow!
 
 ; TODO Power Attacks have a high change of player stagger
@@ -29,6 +31,7 @@ event OnEffectStart(Actor target, Actor caster)
         StartingStamina = GetTargetActor().GetActorValue("Stamina")
         f1PArrowTiltUpAngle = Utility.GetINIFloat("f1PArrowTiltUpAngle:Combat")
     else
+        GetTargetActor()
         if Utility.RandomInt(1, 100) < 20
             Apprentice_StaggerSpell.Cast(GetTargetActor(), GetTargetActor())
         endIf

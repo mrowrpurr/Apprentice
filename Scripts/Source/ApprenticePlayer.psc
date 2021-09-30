@@ -139,6 +139,7 @@ event OnInit()
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
+    UI.SetFloat("HUD Menu", "_root.HUDMovieBaseInstance.StealthMeterInstance._alpha", 0.0)
 endEvent
 
 ; Runs on save game load

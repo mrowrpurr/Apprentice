@@ -1,0 +1,1 @@
+Scriptname Apprentice_UntrainedSneakFallEffect extends ActiveMagicEffect  
