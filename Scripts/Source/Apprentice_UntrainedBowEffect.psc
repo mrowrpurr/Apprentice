@@ -1,6 +1,8 @@
 scriptName Apprentice_UntrainedBowEffect extends ActiveMagicEffect  
 {All of the effects when the player is untrained in Archery AND they are actively attacking}
 
+; TODO - Randomly drop weapon when not trained
+
 ; TODO add support for the Wooden Sword and the Knife + Fork
 
 ; TODO if untrained in Alchemy, chance of potions harming you
