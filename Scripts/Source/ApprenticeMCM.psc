@@ -99,6 +99,9 @@ int property oid_Allowlist_Items_Menu auto
 int property oid_Allowlist_Names_Input auto
 Form[] property Allowlist_Spells_Cache auto ; These are used to
 Form[] property Allowlist_Items_Cache auto ; manage the menus
+int[] property AllowlistTextFiltersOptionIds auto
+int[] property AllowlistSpellOptionIds auto
+int[] property AllowlistItemOptionIds auto
 
 ; Secret Menu
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
@@ -145,6 +148,7 @@ event OnOptionSelect(int optionId)
     ApprenticeMCM_TrainedSkills.OnOptionSelect(self, optionId)
     ApprenticeMCM_SkillLevels.OnOptionSelect(self, optionId)
     ApprenticeMCM_SecretPage.OnOptionSelect(self, optionId)
+    ApprenticeMCM_ItemSpellAllowlist.OnOptionSelect(self, optionId)
 endEvent
 
 event OnOptionHighlight(int optionId)

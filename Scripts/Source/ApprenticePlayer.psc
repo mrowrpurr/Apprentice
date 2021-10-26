@@ -7,11 +7,11 @@ Scriptname ApprenticePlayer extends ReferenceAlias
 ; TODO: TRACK TRAININGS FOR EACH SKILL VIA Books -vs- Training -vs- Total.
 ; We can make it so you need to be trained by trainer BEFORE book, for example.
 
-float function GetCurrentModVersion() global
-    return 1.3
+string function GetCurrentModVersion() global
+    return "1.3.2"
 endFunction
 
-float _currentlyInstalledModVersion
+string property CurrentlyInstalledModVersion auto
 
 function Log(string text) global
     Debug.Trace("[Apprentice] " + text)
@@ -149,8 +149,9 @@ endFunction
 event OnInit()
     ConsoleOriginalHeight = -1.0
     InitializeSecretCode()
+    AddAllowedFilter("Backpack")
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
-    _currentlyInstalledModVersion = GetCurrentModVersion()
+    CurrentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
 endEvent
 
@@ -515,6 +516,7 @@ function UnequipAllItemsWhichShouldBeUnequipped()
     endIf
 endFunction
 
+; TODO: Remove this to JContainers :) And everything else :)
 function AddAllowedFilter(string text)
     if AllowedNames
         AllowedNames = Utility.ResizeStringArray(AllowedNames, AllowedNames.Length + 1)
@@ -523,6 +525,29 @@ function AddAllowedFilter(string text)
         AllowedNames = new string[1]
         AllowedNames[0] = text
     endIf
+endFunction
+
+function RemoveAllowedFilter(string text)
+    AllowedNames = RemoveStringElement(AllowedNames, text)
+endFunction
+
+string[] function RemoveStringElement(string[] theArray, string thestring)
+    string[] newArray
+    if theArray.Length == 1
+        return newArray
+    endIf
+    newArray = Utility.CreatestringArray(theArray.Length - 1)
+    int existingArrayIndex = 0
+    int existingArrayIndexToSkip = theArray.Find(thestring)
+    int newArrayIndex = 0
+    while existingArrayIndex < theArray.Length
+        if existingArrayIndex != existingArrayIndexToSkip
+            newArray[newArrayIndex] = theArray[existingArrayIndex]
+            newArrayIndex += 1
+        endIf
+        existingArrayIndex += 1
+    endWhile
+    return newArray
 endFunction
 
 function AddAllowedItem(Form item)
@@ -535,6 +560,10 @@ function AddAllowedItem(Form item)
     endIf
 endFunction
 
+function RemoveAllowedItem(Form theItem)
+    AllowedItems = RemoveFormElement(AllowedItems, theItem)
+endFunction
+
 function AddAllowedSpell(Form theSpell)
     if AllowedSpells
         AllowedSpells = Utility.ResizeFormArray(AllowedSpells, AllowedSpells.Length + 1)
@@ -543,6 +572,29 @@ function AddAllowedSpell(Form theSpell)
         AllowedSpells = new Form[1]
         AllowedSpells[0] = theSpell
     endIf
+endFunction
+
+function RemoveAllowedSpell(Form theSpell)
+    AllowedSpells = RemoveFormElement(AllowedSpells, theSpell)
+endFunction
+
+Form[] function RemoveFormElement(Form[] theArray, Form theForm)
+    Form[] newArray
+    if theArray.Length == 1
+        return newArray
+    endIf
+    newArray = Utility.CreateFormArray(theArray.Length - 1)
+    int existingArrayIndex = 0
+    int existingArrayIndexToSkip = theArray.Find(theForm)
+    int newArrayIndex = 0
+    while existingArrayIndex < theArray.Length
+        if existingArrayIndex != existingArrayIndexToSkip
+            newArray[newArrayIndex] = theArray[existingArrayIndex]
+            newArrayIndex += 1
+        endIf
+        existingArrayIndex += 1
+    endWhile
+    return newArray
 endFunction
 
 ; ApprenticePlayer.ShowMessage("You are not trained in Alteration magic.\n\nYou cannot equip " + enchantedItem.GetName() + " until you are trained in Alteration.")
