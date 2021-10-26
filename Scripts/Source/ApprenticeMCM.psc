@@ -100,11 +100,12 @@ Form[] property Allowlist_Items_Cache auto ; manage the menus
 
 event OnConfigInit()
     ModName = "Apprentice"
-    Pages = new string[4]
+    Pages = new string[5]
     Pages[0] = "Settings"
     Pages[1] = "Trained Skills"
     Pages[2] = "Skill Levels"
     Pages[3] = ApprenticeMCM_ItemSpellAllowlist.PageName()
+    Pages[4] = ApprenticeMCM_SecretPage.PageName()
 endEvent
 
 event OnPageReset(string page)
@@ -117,10 +118,12 @@ event OnPageReset(string page)
     if LockableOptionFlag == 0
         LockableOptionFlag = OPTION_FLAG_NONE
     endIf
+    
     ApprenticeMCM_Settings.Render(self, page)
     ApprenticeMCM_TrainedSkills.Render(self, page)
     ApprenticeMCM_SkillLevels.Render(self, page)
     ApprenticeMCM_ItemSpellAllowlist.Render(self, page)
+    ApprenticeMCM_SecretPage.Render(self, page)
 endEvent
 
 event OnOptionSelect(int optionId)
