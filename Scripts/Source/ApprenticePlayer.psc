@@ -73,6 +73,7 @@ string[] property AllowedNames auto
 
 ; Secret Menu
 bool ConsoleCurrentlyUnlocked = false
+float property ConsoleOriginalHeight auto
 Form property Apprentice_Message_MessageText_BaseForm auto
 Message property Apprentice_Message_SecretMenu auto
 GlobalVariable property Apprentice_Secret_FastTravelCount auto
@@ -131,6 +132,7 @@ endFunction
 
 ; Runs on initial mod installation
 event OnInit()
+    ConsoleOriginalHeight = -1.0
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
@@ -176,12 +178,21 @@ event OnMenuOpen(string menuName)
                 Game.EnableFastTravel(abEnable = false)
             endIf
         endIf
-    elseIf menuName == "Console" && Apprentice_Settings_DisableConsole.Value == 1
-        if ConsoleCurrentlyUnlocked
-            ConsoleCurrentlyUnlocked = false
+    elseIf menuName == "Console"
+        if ConsoleOriginalHeight == -1.0
+            ConsoleOriginalHeight = UI.GetFloat("Console", "_global.Console.ConsoleInstance._height")
+        endIf
+
+        if Apprentice_Settings_DisableConsole.Value == 1
+            if ConsoleCurrentlyUnlocked
+                UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", ConsoleOriginalHeight)
+            else
+                UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", 0)
+                Utility.WaitMenuMode(0.1)
+                Input.TapKey(Input.GetMappedKey("Console"))
+            endIf
         else
-            Utility.WaitMenuMode(0.1)
-            Input.TapKey(Input.GetMappedKey("Console"))
+            UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", ConsoleOriginalHeight)
         endIf
     endIf
 endEvent
@@ -195,6 +206,11 @@ event OnMenuClose(string menuName)
         IsBookMenuOpen = false
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = false
+    elseIf menuName == "Console"
+        if ConsoleCurrentlyUnlocked
+            ConsoleCurrentlyUnlocked = false
+            UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", 0)
+        endIf
     endIf
 endEvent
 
