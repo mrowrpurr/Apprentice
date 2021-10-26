@@ -71,6 +71,21 @@ Form[] property AllowedSpells auto
 Form[] property AllowedItems  auto
 string[] property AllowedNames auto
 
+; Secret Menu
+Form property Apprentice_Message_MessageText_BaseForm auto
+Message property Apprentice_Message_SecretMenu auto
+GlobalVariable property Apprentice_Secret_FastTravelCount auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Alt auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Ctrl auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Shift auto
+int LEFT_SHIFT  = 42
+int RIGHT_SHIFT = 54
+int LEFT_CTRL   = 29
+int RIGHT_CTRL  = 157
+int LEFT_ALT    = 56
+int RIGHT_ALT   = 184
+
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
@@ -138,6 +153,7 @@ function ListenForEvents()
     RegisterForMenu("Training Menu")
     RegisterForMenu("MapMenu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
+    RegisterForKey(Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int)
 endFunction
 
 ; Watch for Crafting Menu to open. Close it if you're not trained in the appropriate skill (Alchemy, Enchanting, Smithing)
@@ -151,7 +167,11 @@ event OnMenuOpen(string menuName)
         IsTrainingMenuOpen = true
     elseIf menuName == "MapMenu"
         if Apprentice_Settings_DisableFastTravel.Value > 0
-            Game.EnableFastTravel(abEnable = false)
+            if Apprentice_Secret_FastTravelCount.Value > 0
+                Game.EnableFastTravel(abEnable = true)
+            else
+                Game.EnableFastTravel(abEnable = false)
+            endIf
         endIf
     endIf
 endEvent
@@ -165,6 +185,53 @@ event OnMenuClose(string menuName)
         IsBookMenuOpen = false
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = false
+    endIf
+endEvent
+
+; Secret Menu
+event OnKeyDown(int keyCode)
+    bool isAltPressed    = Input.IsKeyPressed(LEFT_ALT)   || Input.IsKeyPressed(RIGHT_ALT)
+    bool isCtrlPressed   = Input.IsKeyPressed(LEFT_CTRL)  || Input.IsKeyPressed(RIGHT_CTRL)
+    bool isShiftPressed  = Input.IsKeyPressed(LEFT_SHIFT) || Input.IsKeyPressed(RIGHT_SHIFT)
+    bool isAltRequired   = Apprentice_Secret_MenuKeyboardShortcut_Alt.Value == 1
+    bool isCtrlRequired  = Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value == 1
+    bool isShiftRequired = Apprentice_Secret_MenuKeyboardShortcut_Shift.Value == 1
+    int requiredKeyCode  = Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int
+    if (keyCode != requiredKeyCode)          || \
+        (isAltRequired   && ! isAltPressed)  || \
+        (isCtrlRequired  && ! isCtrlPressed) || \
+        (isShiftRequired && ! isShiftPressed)
+        return
+    endIf
+
+    ; Set Secret Menu Text
+    int fastTravelCount = Apprentice_Secret_FastTravelCount.Value as int
+    string text = "[Secret Menu]"
+    if fastTravelCount
+        text += "\n\nYou have " + fastTravelCount + " remaining fast travel(s)"
+    endIf
+    Apprentice_Message_MessageText_BaseForm.SetName(text)
+
+    ; Open Secret Menu
+    int increaseFastTravelCount = 0
+    int clearFastTravelCount    = 1
+    int unlockConsole           = 2
+    int result                  = Apprentice_Message_SecretMenu.Show()
+
+    if result == increaseFastTravelCount
+        Apprentice_Secret_FastTravelCount.Value = (Apprentice_Secret_FastTravelCount.Value as int) + 1
+    elseIf result == clearFastTravelCount
+        Apprentice_Secret_FastTravelCount.Value = 0
+    elseIf result == unlockConsole
+        Debug.MessageBox("TODO - ADD CONSOLE SUPPORT")
+    endIf
+endEvent
+
+; Fast Travel Count Redemptions
+event OnPlayerFastTravelEnd(float travelTime)
+    int fastTravelCount = Apprentice_Secret_FastTravelCount.Value as int
+    if fastTravelCount > 0
+        Apprentice_Secret_FastTravelCount.Value = fastTravelCount - 1
     endIf
 endEvent
 

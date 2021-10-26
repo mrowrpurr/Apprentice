@@ -98,6 +98,16 @@ int property oid_Allowlist_Names_Input auto
 Form[] property Allowlist_Spells_Cache auto ; These are used to
 Form[] property Allowlist_Items_Cache auto ; manage the menus
 
+; Secret Menu
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Alt auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Ctrl auto
+GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Shift auto
+int property oid_Secret_MenuKeyboardShortcut_Key auto
+int property oid_Secret_MenuKeyboardShortcut_Alt auto
+int property oid_Secret_MenuKeyboardShortcut_Ctrl auto
+int property oid_Secret_MenuKeyboardShortcut_Shift auto
+
 event OnConfigInit()
     ModName = "Apprentice"
     Pages = new string[5]
@@ -130,12 +140,14 @@ event OnOptionSelect(int optionId)
     ApprenticeMCM_Settings.OnOptionSelect(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionSelect(self, optionId)
     ApprenticeMCM_SkillLevels.OnOptionSelect(self, optionId)
+    ApprenticeMCM_SecretPage.OnOptionSelect(self, optionId)
 endEvent
 
 event OnOptionHighlight(int optionId)
     ApprenticeMCM_Settings.OnOptionHighlight(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionHighlight(self, optionId)
     ApprenticeMCM_ItemSpellAllowlist.OnOptionHighlight(self, optionId)
+    ApprenticeMCM_SecretPage.OnOptionHighlight(self, optionId)
 endEvent
 
 event OnOptionSliderOpen(int optionId)
@@ -158,6 +170,10 @@ endEvent
 
 event OnOptionInputAccept(int optionId, string text)
     ApprenticeMCM_ItemSpellAllowlist.OnOptionInputAccept(self, optionId, text)
+endEvent
+
+event OnOptionKeyMapChange(int optionId, int keyCode, string conflictControl, string conflictName)
+    ApprenticeMCM_SecretPage.OnOptionKeyMapChange(self, optionId, keyCode, conflictControl, conflictName)
 endEvent
 
 ApprenticePlayer function GetPlayerScript()
