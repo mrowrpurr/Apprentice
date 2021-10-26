@@ -37,20 +37,30 @@ function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
-    GlobalVariable theVariable
     if optionId == mcm.oid_Secret_MenuKeyboardShortcut_Alt
-        theVariable = mcm.Apprentice_Secret_MenuKeyboardShortcut_Alt
+        if mcm.Apprentice_Secret_MenuKeyboardShortcut_Alt.Value > 0
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Alt.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Alt.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
+        endIf
     elseIf optionId == mcm.oid_Secret_MenuKeyboardShortcut_Ctrl
-        theVariable = mcm.Apprentice_Secret_MenuKeyboardShortcut_Ctrl
+        if mcm.Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value > 0
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
+        endIf
     elseIf optionId == mcm.oid_Secret_MenuKeyboardShortcut_Shift
-        theVariable = mcm.Apprentice_Secret_MenuKeyboardShortcut_Shift
-    endIf
-    if theVariable.Value > 0
-        theVariable.Value = 0
-        mcm.SetToggleOptionValue(optionId, false)
-    else
-        theVariable.Value = 1
-        mcm.SetToggleOptionValue(optionId, true)
+        if mcm.Apprentice_Secret_MenuKeyboardShortcut_Shift.Value > 0
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Shift.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Secret_MenuKeyboardShortcut_Shift.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
+        endIf
     endIf
 endFunction
 
