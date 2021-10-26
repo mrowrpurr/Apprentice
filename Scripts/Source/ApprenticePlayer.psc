@@ -92,6 +92,7 @@ int RIGHT_ALT   = 184
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
 bool IsBookMenuOpen = false
+bool IsDialogueMenuOpen = false
 
 ; Get the running instance of the ApprenticePlayer script from the main Apprentice quest
 ApprenticePlayer function GetInstance() global
@@ -157,6 +158,7 @@ function ListenForEvents()
     RegisterForMenu("Training Menu")
     RegisterForMenu("MapMenu")
     RegisterForMenu("Console")
+    RegisterForMenu("Dialogue Menu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
     RegisterForKey(Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int)
 endFunction
@@ -170,6 +172,8 @@ event OnMenuOpen(string menuName)
         IsBookMenuOpen = true
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
+    elseIf menuName == "Dialogue Menu"
+        IsDialogueMenuOpen = true
     elseIf menuName == "MapMenu"
         if Apprentice_Settings_DisableFastTravel.Value > 0
             if Apprentice_Secret_FastTravelCount.Value > 0
@@ -206,6 +210,8 @@ event OnMenuClose(string menuName)
         IsBookMenuOpen = false
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = false
+    elseIf menuName == "Dialogue Menu"
+        IsDialogueMenuOpen = false
     elseIf menuName == "Console"
         if ConsoleCurrentlyUnlocked
             ConsoleCurrentlyUnlocked = false
@@ -310,6 +316,8 @@ endFunction
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
+    Debug.MessageBox("Skill Increase - Training Menu Open? " + IsTrainingMenuOpen + " Is Book Menu Open? " + IsBookMenuOpen + " Is Dialogue Open? " + IsDialogueMenuOpen)
+
     if Apprentice_Settings_TrainFromBooks.GetValueInt() == 0
         return
     endIf
