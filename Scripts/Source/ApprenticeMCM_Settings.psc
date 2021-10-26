@@ -19,6 +19,7 @@ endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Settings")
+    mcm.oid_Settings_DisableFastTravel = mcm.AddToggleOption("Disable Fast Travel", mcm.Apprentice_Settings_DisableFastTravel.Value == 1)
     mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Allow Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1, mcm.LockableOptionFlag)
     mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
@@ -56,6 +57,17 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         else
             mcm.Apprentice_Settings_TrainFromBooks.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_Settings_TrainFromBooks_Toggle, true)
+        endIf
+        ; TODO change all the GetValueInt() to .Value as int
+        ; TODO update ToggleOptionValue to use optionId
+    ; Fast Travel
+    elseIf optionId == mcm.oid_Settings_DisableFastTravel
+        if mcm.Apprentice_Settings_DisableFastTravel.Value > 0
+            mcm.Apprentice_Settings_DisableFastTravel.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Settings_DisableFastTravel.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
         endIf
     endIf
 endFunction

@@ -9,8 +9,10 @@ GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_DropOnEquip auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+GlobalVariable property Apprentice_Settings_DisableFastTravel auto
 int property oid_LockMenu auto
 int property LockableOptionFlag auto
+int property oid_Settings_DisableFastTravel auto
 int property oid_Settings_RestrictEnchantedItemUsage auto
 int property oid_Settings_TrainFromBooks_Toggle auto
 int property oid_StartingCharacter_PerkPoints_Slider auto
