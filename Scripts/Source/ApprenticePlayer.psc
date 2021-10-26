@@ -25,6 +25,7 @@ GlobalVariable property Apprentice_ModEnabled auto
 GlobalVariable property Apprentice_Settings_TrainFromBooks auto
 GlobalVariable property Apprentice_Settings_NotificationOption auto ; (1) MessageBox, (2) Notification, (0) None
 GlobalVariable property Apprentice_Settings_RestrictEnchantedItemUsage auto
+GlobalVariable property Apprentice_Settings_DisableFastTravel auto
 
 ; Training Tracking
 ;
@@ -135,6 +136,7 @@ function ListenForEvents()
     RegisterForMenu("InventoryMenu")
     RegisterForMenu("Book Menu")
     RegisterForMenu("Training Menu")
+    RegisterForMenu("MapMenu")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
 endFunction
 
@@ -147,6 +149,10 @@ event OnMenuOpen(string menuName)
         IsBookMenuOpen = true
     elseIf menuName == "Training Menu"
         IsTrainingMenuOpen = true
+    elseIf menuName == "MapMenu"
+        if Apprentice_Settings_DisableFastTravel.Value > 0
+            Game.EnableFastTravel(abEnable = false)
+        endIf
     endIf
 endEvent
 
