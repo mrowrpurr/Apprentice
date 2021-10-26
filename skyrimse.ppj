@@ -10,11 +10,9 @@
     Package="true"
     Final="false">
     <Variables>
-        <!-- Set the name of your mod: -->
         <Variable Name="ModName" Value="Apprentice" />
-        <!-- The folder where you store all of your mods -->
+        <Variable Name="ModVersion" Value="v1.3" />
         <Variable Name="ModsFolder" Value="C:\Users\mrowr\Dropbox\Skyrim\Mods" />
-        <!-- Optional folder with additional source code for imports -->
         <Variable Name="ImportsFolder" Value="C:\Users\mrowr\Dropbox\Skyrim\Imports" />
     </Variables>
     <Imports>
@@ -43,7 +41,7 @@
     </Packages>
     <!-- The following section is for .zip archive. You can enable it by setting Zip="true" in the PapyrusProject -->
     <ZipFiles Output="Build">
-        <ZipFile Name="@ModName" RootDir="." Compression="deflate">
+        <ZipFile Name="@ModName-@ModVersion" RootDir="." Compression="deflate">
             <Include>@ModName.esp</Include>
             <Include NoRecurse="true">*.bsa</Include>
         </ZipFile>

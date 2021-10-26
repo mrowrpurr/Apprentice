@@ -8,7 +8,7 @@ Scriptname ApprenticePlayer extends ReferenceAlias
 ; We can make it so you need to be trained by trainer BEFORE book, for example.
 
 float function GetCurrentModVersion() global
-    return 1.0
+    return 1.3
 endFunction
 
 float _currentlyInstalledModVersion
