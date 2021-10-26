@@ -34,8 +34,10 @@ endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
     if optionId == mcm.oid_LockMenu
-        mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
-        mcm.ForcePageReset()
+        if mcm.ShowMessage("Are you sure?\n\nYou will no longer be able to edit your trained skills, skill points, or anything else!\n\nYou cannot undo this action.")
+            mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
+            mcm.ForcePageReset()
+        endIf
         return
     endIf
     if optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
