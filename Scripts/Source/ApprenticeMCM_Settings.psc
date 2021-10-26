@@ -15,13 +15,11 @@ function LeftColumn(ApprenticeMCM mcm) global
     mcm.oid_LockMenu = mcm.AddTextOption("", "Click here to lock this menu")
     mcm.AddEmptyOption()
     StartingCharacterStats(mcm)
-
-    ; TODO
-    ; mcm.ShowMessage()
 endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Settings")
+    mcm.oid_Settings_DisableFastTravel = mcm.AddToggleOption("Disable Fast Travel", mcm.Apprentice_Settings_DisableFastTravel.Value == 1)
     mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Allow Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1, mcm.LockableOptionFlag)
     mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
@@ -33,20 +31,17 @@ function StartingCharacterStats(ApprenticeMCM mcm) global
     mcm.oid_StartingCharacter_Health_Slider = mcm.AddSliderOption("Starting Health", GetAV("Health"), a_flags = mcm.LockableOptionFlag)
     mcm.oid_StartingCharacter_Stamina_Slider = mcm.AddSliderOption("Starting Stamina", GetAV("Stamina"), a_flags = mcm.LockableOptionFlag)
     mcm.oid_StartingCharacter_CarryWeight_Slider = mcm.AddSliderOption("Carry Weight", GetAV("CarryWeight"), a_flags = mcm.LockableOptionFlag)
-    mcm.AddEmptyOption()
-    mcm.oid_StartingCharacter_ResetSkillsToZero = mcm.AddTextOption("", "Reset all starting skills to zero")
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
     if optionId == mcm.oid_LockMenu
-        mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
-        mcm.ForcePageReset()
+        if mcm.ShowMessage("Are you sure?\n\nYou will no longer be able to edit your trained skills, skill points, or anything else!\n\nYou cannot undo this action.")
+            mcm.LockableOptionFlag = mcm.OPTION_FLAG_DISABLED
+            mcm.ForcePageReset()
+        endIf
         return
     endIf
-
-    if optionId == mcm.oid_StartingCharacter_ResetSkillsToZero
-        ResetAllSkillsToZero(mcm)
-    elseIf optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
+    if optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
         if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
             mcm.Apprentice_Training_Enchanting.SetValueInt(0)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, false)
@@ -62,6 +57,17 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         else
             mcm.Apprentice_Settings_TrainFromBooks.SetValueInt(1)
             mcm.SetToggleOptionValue(mcm.oid_Settings_TrainFromBooks_Toggle, true)
+        endIf
+        ; TODO change all the GetValueInt() to .Value as int
+        ; TODO update ToggleOptionValue to use optionId
+    ; Fast Travel
+    elseIf optionId == mcm.oid_Settings_DisableFastTravel
+        if mcm.Apprentice_Settings_DisableFastTravel.Value > 0
+            mcm.Apprentice_Settings_DisableFastTravel.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Settings_DisableFastTravel.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
         endIf
     endIf
 endFunction
@@ -82,34 +88,6 @@ endFunction
 
 function SetAV(string skillName, float value) global
     Game.GetPlayer().SetActorValue(skillName, value)
-endFunction
-
-function ResetAllSkillsToZero(ApprenticeMCM mcm) global
-    SetAV("Alteration", 0)
-    SetAV("Conjuration", 0)
-    SetAV("Destruction", 0)
-    SetAV("Illusion", 0)
-    SetAV("Restoration", 0)
-
-    SetAV("Alchemy", 0)
-    SetAV("Enchanting", 0)
-
-    SetAV("LightArmor", 0)
-    SetAV("HeavyArmor", 0)
-    SetAV("Block", 0)
-
-    SetAV("OneHanded", 0)
-    SetAV("TwoHanded", 0)
-    SetAV("Marksman", 0)
-
-    SetAV("Sneak", 0)
-    SetAV("Lockpicking", 0)
-    SetAV("Pickpocket", 0)
-
-    SetAV("Speechcraft", 0)
-    SetAV("Smithing", 0)
-
-    mcm.SetTextOptionValue(mcm.oid_StartingCharacter_ResetSkillsToZero, "Updated all skills to zero!")
 endFunction
 
 function SetSliderValuesForAV(ApprenticeMCM mcm, string actorValueName, float startingValue = 1.0, float endingValue = 1000.0, float interval = 1.0) global
