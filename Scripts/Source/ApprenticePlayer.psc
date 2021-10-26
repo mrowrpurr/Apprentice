@@ -316,9 +316,13 @@ endFunction
 ; Mark the player as being trained once they learn a skill (increment the count so we know how many times they've been trained via trainer or book)
 ; e.g. from Training or from a Skill Book
 event OnSkillIncrease(string skillName)
-    Debug.MessageBox("Skill Increase - Training Menu Open? " + IsTrainingMenuOpen + " Is Book Menu Open? " + IsBookMenuOpen + " Is Dialogue Open? " + IsDialogueMenuOpen)
+    ; Don't set as trained if from a book and books are disabled
+    if Apprentice_Settings_TrainFromBooks.GetValueInt() == 0 && IsBookMenuOpen
+        return
+    endIf
 
-    if Apprentice_Settings_TrainFromBooks.GetValueInt() == 0
+    ; Don't set as trained if not from a Book OR Trainer OR Dialogue
+    if ! IsBookMenuOpen && ! IsTrainingMenuOpen && ! IsDialogueMenuOpen
         return
     endIf
 
