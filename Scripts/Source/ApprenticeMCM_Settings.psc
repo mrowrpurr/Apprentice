@@ -22,6 +22,7 @@ function RightColumn(ApprenticeMCM mcm) global
     mcm.oid_Settings_DisableFastTravel = mcm.AddToggleOption("Disable Fast Travel", mcm.Apprentice_Settings_DisableFastTravel.Value == 1, mcm.LockableOptionFlag)
     mcm.oid_Settings_TrainFromBooks_Toggle = mcm.AddToggleOption("Allow Training from Books", mcm.Apprentice_Settings_TrainFromBooks.GetValueInt() == 1, mcm.LockableOptionFlag)
     mcm.oid_Settings_RestrictEnchantedItemUsage = mcm.AddToggleOption("Restrict Enchanted Item Usage", mcm.Apprentice_Settings_RestrictEnchantedItemUsage.GetValueInt() == 1, mcm.LockableOptionFlag)
+    mcm.oid_Settings_DisableConsole = mcm.AddToggleOption("Disable Skyrim ~ Console", mcm.Apprentice_Settings_DisableConsole.GetValueInt() == 1, mcm.LockableOptionFlag)
 endFunction
 
 function StartingCharacterStats(ApprenticeMCM mcm) global
@@ -71,6 +72,15 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.SetToggleOptionValue(optionId, true)
             Game.EnableFastTravel(abEnable = false)
         endIf
+    ; Disable Console
+    elseIf optionId == mcm.oid_Settings_DisableConsole
+        if mcm.Apprentice_Settings_DisableConsole.Value > 0
+            mcm.Apprentice_Settings_DisableConsole.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Settings_DisableConsole.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
+        endIf
     endIf
 endFunction
 
@@ -81,6 +91,9 @@ function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
     ; Book
     elseIf optionId == mcm.oid_Settings_TrainFromBooks_Toggle
         mcm.SetInfoText("Toggle whether skill increases from skill books count as training")
+    ; Console
+    elseIf optionId == mcm.oid_Settings_DisableConsole
+        mcm.SetInfoText("This disables access to the built-in Skyrim ~ console")
     endIf
 endFunction
 

@@ -72,6 +72,7 @@ Form[] property AllowedItems  auto
 string[] property AllowedNames auto
 
 ; Secret Menu
+bool ConsoleCurrentlyUnlocked = false
 Form property Apprentice_Message_MessageText_BaseForm auto
 Message property Apprentice_Message_SecretMenu auto
 GlobalVariable property Apprentice_Secret_FastTravelCount auto
@@ -79,6 +80,7 @@ GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Alt auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Ctrl auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Shift auto
+GlobalVariable property Apprentice_Settings_DisableConsole auto
 int LEFT_SHIFT  = 42
 int RIGHT_SHIFT = 54
 int LEFT_CTRL   = 29
@@ -152,6 +154,7 @@ function ListenForEvents()
     RegisterForMenu("Book Menu")
     RegisterForMenu("Training Menu")
     RegisterForMenu("MapMenu")
+    RegisterForMenu("Console")
     PO3_Events_Alias.RegisterForSkillIncrease(self)
     RegisterForKey(Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int)
 endFunction
@@ -172,6 +175,13 @@ event OnMenuOpen(string menuName)
             else
                 Game.EnableFastTravel(abEnable = false)
             endIf
+        endIf
+    elseIf menuName == "Console" && Apprentice_Settings_DisableConsole.Value == 1
+        if ConsoleCurrentlyUnlocked
+            ConsoleCurrentlyUnlocked = false
+        else
+            Utility.WaitMenuMode(0.1)
+            Input.TapKey(Input.GetMappedKey("Console"))
         endIf
     endIf
 endEvent
@@ -223,7 +233,8 @@ event OnKeyDown(int keyCode)
     elseIf result == clearFastTravelCount
         Apprentice_Secret_FastTravelCount.Value = 0
     elseIf result == unlockConsole
-        Debug.MessageBox("TODO - ADD CONSOLE SUPPORT")
+        ConsoleCurrentlyUnlocked = true
+        Input.TapKey(Input.GetMappedKey("Console"))
     endIf
 endEvent
 
