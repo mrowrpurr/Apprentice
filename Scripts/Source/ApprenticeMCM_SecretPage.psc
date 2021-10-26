@@ -18,6 +18,7 @@ endFunction
 
 function RightColumn(ApprenticeMCM mcm) global
     mcm.AddHeaderOption("Secret Menu")
+    mcm.oid_Secret_MenuPasswordRequired       = mcm.AddToggleOption("Secret Password Required", mcm.Apprentice_Secret_MenuPasswordRequired.Value > 0, mcm.LockableOptionFlag)
     mcm.oid_Secret_MenuKeyboardShortcut_Key   = mcm.AddKeyMapOption("Keyboard Shortcut to open Secret Menu", mcm.Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int)
     mcm.oid_Secret_MenuKeyboardShortcut_Alt   = mcm.AddToggleOption("Alt", mcm.Apprentice_Secret_MenuKeyboardShortcut_Alt.Value == 1)
     mcm.oid_Secret_MenuKeyboardShortcut_Ctrl  = mcm.AddToggleOption("Ctrl", mcm.Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value == 1)
@@ -33,6 +34,8 @@ function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
         mcm.SetInfoText("Ctrl-key binding for Secret Menu keyboard shortcut")
     elseIf optionId == mcm.oid_Secret_MenuKeyboardShortcut_Shift
         mcm.SetInfoText("Shift-key binding for Secret Menu keyboard shortcut")
+    elseIf optionId == mcm.oid_Secret_MenuPasswordRequired
+        mcm.SetInfoText("Toggle if secret menu requires a secret password to activate (see Apprentice on Nexus for clues on the password). If you lock the Apprentice menu, this option will be locked! Default: true")
     endIf
 endFunction
 
@@ -59,6 +62,14 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
             mcm.SetToggleOptionValue(optionId, false)
         else
             mcm.Apprentice_Secret_MenuKeyboardShortcut_Shift.Value = 1
+            mcm.SetToggleOptionValue(optionId, true)
+        endIf
+    elseIf optionId == mcm.oid_Secret_MenuPasswordRequired
+        if mcm.Apprentice_Secret_MenuPasswordRequired.Value > 0
+            mcm.Apprentice_Secret_MenuPasswordRequired.Value = 0
+            mcm.SetToggleOptionValue(optionId, false)
+        else
+            mcm.Apprentice_Secret_MenuPasswordRequired.Value = 1
             mcm.SetToggleOptionValue(optionId, true)
         endIf
     endIf

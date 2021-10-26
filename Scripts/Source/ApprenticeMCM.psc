@@ -105,10 +105,12 @@ GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Alt auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Ctrl auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Shift auto
+GlobalVariable property Apprentice_Secret_MenuPasswordRequired auto
 int property oid_Secret_MenuKeyboardShortcut_Key auto
 int property oid_Secret_MenuKeyboardShortcut_Alt auto
 int property oid_Secret_MenuKeyboardShortcut_Ctrl auto
 int property oid_Secret_MenuKeyboardShortcut_Shift auto
+int property oid_Secret_MenuPasswordRequired auto
 
 event OnConfigInit()
     ModName = "Apprentice"

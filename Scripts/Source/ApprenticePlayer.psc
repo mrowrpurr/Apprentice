@@ -81,6 +81,7 @@ GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Key auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Alt auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Ctrl auto
 GlobalVariable property Apprentice_Secret_MenuKeyboardShortcut_Shift auto
+GlobalVariable property Apprentice_Secret_MenuPasswordRequired auto
 GlobalVariable property Apprentice_Settings_DisableConsole auto
 int LEFT_SHIFT  = 42
 int RIGHT_SHIFT = 54
@@ -88,6 +89,19 @@ int LEFT_CTRL   = 29
 int RIGHT_CTRL  = 157
 int LEFT_ALT    = 56
 int RIGHT_ALT   = 184
+int UP          = 200
+int DOWN        = 208
+int LEFT        = 203
+int RIGHT       = 205
+int ENTER       = 28
+int ESCAPE      = 1
+int KEY_A       = 30
+int KEY_W       = 17
+int KEY_S       = 31
+int KEY_D       = 32
+int[] SECRET_CODE
+int[] CURRENT_SECRET_CODE
+bool IsListeningForSecretCode
 
 bool IsInventoryMenuOpen = false
 bool IsTrainingMenuOpen = false
@@ -134,6 +148,7 @@ endFunction
 ; Runs on initial mod installation
 event OnInit()
     ConsoleOriginalHeight = -1.0
+    InitializeSecretCode()
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
     _currentlyInstalledModVersion = GetCurrentModVersion()
     ListenForEvents()
@@ -222,26 +237,130 @@ endEvent
 
 ; Secret Menu
 event OnKeyDown(int keyCode)
-    bool isAltPressed    = Input.IsKeyPressed(LEFT_ALT)   || Input.IsKeyPressed(RIGHT_ALT)
-    bool isCtrlPressed   = Input.IsKeyPressed(LEFT_CTRL)  || Input.IsKeyPressed(RIGHT_CTRL)
-    bool isShiftPressed  = Input.IsKeyPressed(LEFT_SHIFT) || Input.IsKeyPressed(RIGHT_SHIFT)
-    bool isAltRequired   = Apprentice_Secret_MenuKeyboardShortcut_Alt.Value == 1
-    bool isCtrlRequired  = Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value == 1
-    bool isShiftRequired = Apprentice_Secret_MenuKeyboardShortcut_Shift.Value == 1
-    int requiredKeyCode  = Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int
-    if (keyCode != requiredKeyCode)          || \
-        (isAltRequired   && ! isAltPressed)  || \
-        (isCtrlRequired  && ! isCtrlPressed) || \
-        (isShiftRequired && ! isShiftPressed)
-        return
+    if IsListeningForSecretCode
+        int nextKeyCodeInCode
+        if CURRENT_SECRET_CODE
+            nextKeyCodeInCode = SECRET_CODE[CURRENT_SECRET_CODE.Length]
+        else
+            nextKeyCodeInCode = SECRET_CODE[0]
+        endIf
+        if keyCode == nextKeyCodeInCode
+            if CURRENT_SECRET_CODE
+                CURRENT_SECRET_CODE = Utility.ResizeIntArray(CURRENT_SECRET_CODE, CURRENT_SECRET_CODE.Length + 1)
+            else
+                CURRENT_SECRET_CODE = new int[1]
+            endIf
+            CURRENT_SECRET_CODE[CURRENT_SECRET_CODE.Length - 1] = keyCode
+            if CURRENT_SECRET_CODE.Length == SECRET_CODE.Length
+                StopListeningForSecretCode()
+                ShowSecretMenu()
+            endIf
+        else
+            StopListeningForSecretCode()
+        endIf
+    else
+        bool isAltPressed    = Input.IsKeyPressed(LEFT_ALT)   || Input.IsKeyPressed(RIGHT_ALT)
+        bool isCtrlPressed   = Input.IsKeyPressed(LEFT_CTRL)  || Input.IsKeyPressed(RIGHT_CTRL)
+        bool isShiftPressed  = Input.IsKeyPressed(LEFT_SHIFT) || Input.IsKeyPressed(RIGHT_SHIFT)
+        bool isAltRequired   = Apprentice_Secret_MenuKeyboardShortcut_Alt.Value == 1
+        bool isCtrlRequired  = Apprentice_Secret_MenuKeyboardShortcut_Ctrl.Value == 1
+        bool isShiftRequired = Apprentice_Secret_MenuKeyboardShortcut_Shift.Value == 1
+        int requiredKeyCode  = Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int
+        if (keyCode != requiredKeyCode)          || \
+            (isAltRequired   && ! isAltPressed)  || \
+            (isCtrlRequired  && ! isCtrlPressed) || \
+            (isShiftRequired && ! isShiftPressed)
+            return
+        endIf
+        if Apprentice_Secret_MenuPasswordRequired.Value > 0
+            ListenForSecretCode()
+        else
+            ShowSecretMenu()
+        endIf
+    endIf
+endEvent
+
+function InitializeSecretCode()
+    ; 1 2 3 4 5 6 7 8
+    SECRET_CODE = new int[8]
+    SECRET_CODE[0] = UP
+    SECRET_CODE[1] = UP
+    SECRET_CODE[2] = DOWN
+    SECRET_CODE[3] = DOWN
+    SECRET_CODE[4] = LEFT
+    SECRET_CODE[5] = RIGHT
+    SECRET_CODE[6] = LEFT
+    SECRET_CODE[7] = RIGHT
+endFunction
+
+function ListenForSecretCode()
+    ListenForSecretKeyCode(UP)
+    ListenForSecretKeyCode(DOWN)
+    ListenForSecretKeyCode(LEFT)
+    ListenForSecretKeyCode(RIGHT)
+    ListenForSecretKeyCode(KEY_A) ; Keys below to make sure you can't accidentally unlock sorta (make it easier to fail)
+    ListenForSecretKeyCode(KEY_D)
+    ListenForSecretKeyCode(KEY_W)
+    ListenForSecretKeyCode(KEY_S)
+    ListenForSecretKeyCode(ESCAPE)
+    ListenForSecretKeyCode(ENTER)
+    CURRENT_SECRET_CODE = None ; Will cause Papyrus log but new int[1] isn't casting to a boolean as I expect
+    IsListeningForSecretCode = true
+    Debug.Notification("Enter Password")
+endFunction
+
+function StopListeningForSecretCode()
+    IsListeningForSecretCode = false
+    UnlistenForSecretKeyCode(UP)
+    UnlistenForSecretKeyCode(DOWN)
+    UnlistenForSecretKeyCode(LEFT)
+    UnlistenForSecretKeyCode(RIGHT)
+    UnlistenForSecretKeyCode(KEY_A) ; Keys below to make sure you can't accidentally unlock sorta (make it easier to fail)
+    UnlistenForSecretKeyCode(KEY_D)
+    UnlistenForSecretKeyCode(KEY_W)
+    UnlistenForSecretKeyCode(KEY_S)
+    UnlistenForSecretKeyCode(ESCAPE)
+    UnlistenForSecretKeyCode(ENTER)
+endFunction
+
+function ListenForSecretKeyCode(int keyCode)
+    if keyCode != Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int ; Already being listened to in this case
+        RegisterForKey(keyCode)
+    endIf
+endFunction
+
+function UnlistenForSecretKeyCode(int keyCode)
+    if keyCode != Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int ; Need to keep listening in this case
+        UnregisterForKey(keyCode)
+    endIf
+endFunction
+
+function ShowSecretMenu()
+    ; Set Secret Menu Text
+    string text = "[Secret Menu]\n\nYou found a secret!\n\n"
+
+    bool isFastTravelDisabled = Apprentice_Settings_DisableFastTravel.Value > 0
+    bool isConsoleDisabled    = Apprentice_Settings_DisableConsole.Value    > 0
+
+    if isFastTravelDisabled || isConsoleDisabled
+        text += "You can use this menu to:\n"
+        if isFastTravelDisabled
+            text += "- Add individual Fast Travel allowances\n"
+        endIf
+        if isConsoleDisabled
+            text += "- Unlock the Skyrim ~ Console (for a single use)\n"
+        endIf
+    else
+        text += "Nothing found here.\n\nUse this menu if you have disabled Fast Travel or the Skyrim ~ Console"
     endIf
 
-    ; Set Secret Menu Text
-    int fastTravelCount = Apprentice_Secret_FastTravelCount.Value as int
-    string text = "[Secret Menu]"
-    if fastTravelCount
-        text += "\n\nYou have " + fastTravelCount + " remaining fast travel(s)"
+    if isFastTravelDisabled
+        int fastTravelCount = Apprentice_Secret_FastTravelCount.Value as int
+        if fastTravelCount
+            text += "\nYou have " + fastTravelCount + " remaining fast travel(s)"
+        endIf
     endIf
+
     Apprentice_Message_MessageText_BaseForm.SetName(text)
 
     ; Open Secret Menu
@@ -258,7 +377,7 @@ event OnKeyDown(int keyCode)
         ConsoleCurrentlyUnlocked = true
         Input.TapKey(Input.GetMappedKey("Console"))
     endIf
-endEvent
+endFunction
 
 ; Fast Travel Count Redemptions
 event OnPlayerFastTravelEnd(float travelTime)
