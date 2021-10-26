@@ -93,7 +93,10 @@ function OnOptionHighlight(ApprenticeMCM mcm, int optionId) global
         mcm.SetInfoText("Toggle whether skill increases from skill books count as training")
     ; Console
     elseIf optionId == mcm.oid_Settings_DisableConsole
-        mcm.SetInfoText("This disables access to the built-in Skyrim ~ console")
+        mcm.SetInfoText("Toggle access to the built-in Skyrim ~ console")
+    ; Fast Travel
+    elseIf optionId == mcm.oid_Settings_DisableFastTravel
+        mcm.SetInfoText("Toggle player's ability to fast travel")
     endIf
 endFunction
 
