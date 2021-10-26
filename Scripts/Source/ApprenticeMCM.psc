@@ -124,6 +124,7 @@ endEvent
 event OnOptionSelect(int optionId)
     ApprenticeMCM_Settings.OnOptionSelect(self, optionId)
     ApprenticeMCM_TrainedSkills.OnOptionSelect(self, optionId)
+    ApprenticeMCM_SkillLevels.OnOptionSelect(self, optionId)
 endEvent
 
 event OnOptionHighlight(int optionId)

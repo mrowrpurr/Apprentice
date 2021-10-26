@@ -30,8 +30,6 @@ function StartingCharacterStats(ApprenticeMCM mcm) global
     mcm.oid_StartingCharacter_Health_Slider = mcm.AddSliderOption("Starting Health", GetAV("Health"), a_flags = mcm.LockableOptionFlag)
     mcm.oid_StartingCharacter_Stamina_Slider = mcm.AddSliderOption("Starting Stamina", GetAV("Stamina"), a_flags = mcm.LockableOptionFlag)
     mcm.oid_StartingCharacter_CarryWeight_Slider = mcm.AddSliderOption("Carry Weight", GetAV("CarryWeight"), a_flags = mcm.LockableOptionFlag)
-    mcm.AddEmptyOption()
-    mcm.oid_StartingCharacter_ResetSkillsToZero = mcm.AddTextOption("", "Reset all starting skills to zero")
 endFunction
 
 function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
@@ -40,10 +38,7 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         mcm.ForcePageReset()
         return
     endIf
-
-    if optionId == mcm.oid_StartingCharacter_ResetSkillsToZero
-        ResetAllSkillsToZero(mcm)
-    elseIf optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
+    if optionId == mcm.oid_TrainedSkills_Magic_Enchanting_Toggle
         if mcm.Apprentice_Training_Enchanting.GetValueInt() == 1
             mcm.Apprentice_Training_Enchanting.SetValueInt(0)
             mcm.SetToggleOptionValue(mcm.oid_TrainedSkills_Magic_Enchanting_Toggle, false)
@@ -79,34 +74,6 @@ endFunction
 
 function SetAV(string skillName, float value) global
     Game.GetPlayer().SetActorValue(skillName, value)
-endFunction
-
-function ResetAllSkillsToZero(ApprenticeMCM mcm) global
-    SetAV("Alteration", 0)
-    SetAV("Conjuration", 0)
-    SetAV("Destruction", 0)
-    SetAV("Illusion", 0)
-    SetAV("Restoration", 0)
-
-    SetAV("Alchemy", 0)
-    SetAV("Enchanting", 0)
-
-    SetAV("LightArmor", 0)
-    SetAV("HeavyArmor", 0)
-    SetAV("Block", 0)
-
-    SetAV("OneHanded", 0)
-    SetAV("TwoHanded", 0)
-    SetAV("Marksman", 0)
-
-    SetAV("Sneak", 0)
-    SetAV("Lockpicking", 0)
-    SetAV("Pickpocket", 0)
-
-    SetAV("Speechcraft", 0)
-    SetAV("Smithing", 0)
-
-    mcm.SetTextOptionValue(mcm.oid_StartingCharacter_ResetSkillsToZero, "Updated all skills to zero!")
 endFunction
 
 function SetSliderValuesForAV(ApprenticeMCM mcm, string actorValueName, float startingValue = 1.0, float endingValue = 1000.0, float interval = 1.0) global
