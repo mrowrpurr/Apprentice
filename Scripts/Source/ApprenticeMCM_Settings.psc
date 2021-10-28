@@ -74,27 +74,17 @@ function OnOptionSelect(ApprenticeMCM mcm, int optionId) global
         endIf
     ; Disable Console
     elseIf optionId == mcm.oid_Settings_DisableConsole
+        ApprenticePlayer playerScript = mcm.GetPlayerScript()
         if mcm.Apprentice_Settings_DisableConsole.Value > 0
             mcm.Apprentice_Settings_DisableConsole.Value = 0
             mcm.SetToggleOptionValue(optionId, false)
+            playerScript.UnlockConsole()
+            playerScript.JustChangedTheConsoleState = true
         else
             mcm.Apprentice_Settings_DisableConsole.Value = 1
             mcm.SetToggleOptionValue(optionId, true)
-            UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
-            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", false)
+            playerScript.LockConsole()
+            playerScript.JustChangedTheConsoleState = true
         endIf
     endIf
 endFunction

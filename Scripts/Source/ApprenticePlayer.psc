@@ -72,8 +72,8 @@ Form[] property AllowedItems  auto
 string[] property AllowedNames auto
 
 ; Secret Menu
+bool property JustChangedTheConsoleState auto
 bool ConsoleCurrentlyUnlocked = false
-float property ConsoleOriginalHeight auto
 Form property Apprentice_Message_MessageText_BaseForm auto
 Message property Apprentice_Message_SecretMenu auto
 GlobalVariable property Apprentice_Secret_FastTravelCount auto
@@ -147,7 +147,6 @@ endFunction
 
 ; Runs on initial mod installation
 event OnInit()
-    ConsoleOriginalHeight = -1.0
     InitializeSecretCode()
     AddAllowedFilter("Backpack")
     GetActorReference().AddPerk(Apprentice_Restrictions_Perk)
@@ -179,6 +178,43 @@ function ListenForEvents()
     RegisterForKey(Apprentice_Secret_MenuKeyboardShortcut_Key.Value as int)
 endFunction
 
+function LockConsole()
+    UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
+    UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", false)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", false)
+endFunction
+
+function UnlockConsole()
+    UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
+    UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "")
+    UI.SetString("Console", "_global.Console.ConsoleInstance.CommandHistory.text", "")
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", true)
+    UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", true)
+endFunction
+
 ; Watch for Crafting Menu to open. Close it if you're not trained in the appropriate skill (Alchemy, Enchanting, Smithing)
 ; Watch for Inventory Menu to open. SkyUI hates it if we unequip armor while it's open.
 event OnMenuOpen(string menuName)
@@ -200,60 +236,17 @@ event OnMenuOpen(string menuName)
         endIf
     elseIf menuName == "Console"
         if Apprentice_Settings_DisableConsole.Value == 1
-            ; UI.SetBool("Console", "_global.Console.ConsoleInstance._visible", false)
             if ConsoleCurrentlyUnlocked
-                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "")
-                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandHistory.text", "")
-                UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", true)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", true)
+                UnlockConsole()
             else
-                UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
-                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", false)
-                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", false)
-                Utility.WaitMenuMode(0.1)
+                LockConsole()
+                Utility.WaitMenuMode(0.15)
                 Input.TapKey(Input.GetMappedKey("Console"))
             endIf
-        else
-            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "")
-            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandHistory.text", "")
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", true)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", true)
+        elseIf JustChangedTheConsoleState
+            UnlockConsole()
         endIf
+        JustChangedTheConsoleState = false
     endIf
 endEvent
 
@@ -270,12 +263,8 @@ event OnMenuClose(string menuName)
         IsDialogueMenuOpen = false
     elseIf menuName == "Console"
         if ConsoleCurrentlyUnlocked
+            LockConsole()
             ConsoleCurrentlyUnlocked = false
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
-            UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
-            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
         endIf
     endIf
 endEvent
@@ -420,6 +409,7 @@ function ShowSecretMenu()
         Apprentice_Secret_FastTravelCount.Value = 0
     elseIf result == unlockConsole
         ConsoleCurrentlyUnlocked = true
+        JustChangedTheConsoleState = true
         Input.TapKey(Input.GetMappedKey("Console"))
     endIf
 endFunction
