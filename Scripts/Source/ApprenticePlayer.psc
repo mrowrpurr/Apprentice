@@ -410,9 +410,16 @@ function ShowSecretMenu()
     elseIf result == unlockConsole
         ConsoleCurrentlyUnlocked = true
         JustChangedTheConsoleState = true
-        Input.TapKey(Input.GetMappedKey("Console"))
+        RegisterForSingleUpdate(0.5)
     endIf
 endFunction
+
+; Open the console *after* ShowSecretMenu() finishes blocking (so we can get the mouse cursor back for selection)
+event OnUpdate()
+    if ConsoleCurrentlyUnlocked && JustChangedTheConsoleState
+        Input.TapKey(Input.GetMappedKey("Console"))
+    endIF
+endEvent
 
 ; Fast Travel Count Redemptions
 event OnPlayerFastTravelEnd(float travelTime)
