@@ -199,20 +199,60 @@ event OnMenuOpen(string menuName)
             endIf
         endIf
     elseIf menuName == "Console"
-        if ConsoleOriginalHeight == -1.0
-            ConsoleOriginalHeight = UI.GetFloat("Console", "_global.Console.ConsoleInstance._height")
-        endIf
-
         if Apprentice_Settings_DisableConsole.Value == 1
+            ; UI.SetBool("Console", "_global.Console.ConsoleInstance._visible", false)
             if ConsoleCurrentlyUnlocked
-                UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", ConsoleOriginalHeight)
+                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "")
+                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandHistory.text", "")
+                UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", true)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", true)
             else
-                UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", 0)
+                UI.SetString("Console", "_global.Console.ConsoleInstance.CurrentSelection.text", "")
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
+                UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", false)
+                UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", false)
                 Utility.WaitMenuMode(0.1)
                 Input.TapKey(Input.GetMappedKey("Console"))
             endIf
         else
-            UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", ConsoleOriginalHeight)
+            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "")
+            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandHistory.text", "")
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefName._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormID._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormType._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormID._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormType._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormDefinedIn._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.BaseFormLastChanged._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormDefinedIn._visible", true)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.BaseInfoWindow.RefFormLastChanged._visible", true)
         endIf
     endIf
 endEvent
@@ -231,7 +271,11 @@ event OnMenuClose(string menuName)
     elseIf menuName == "Console"
         if ConsoleCurrentlyUnlocked
             ConsoleCurrentlyUnlocked = false
-            UI.SetFloat("Console", "_global.Console.ConsoleInstance._height", 0)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandEntry._visible", false)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CommandHistory._visible", false)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.CurrentSelection._visible", false)
+            UI.SetBool("Console", "_global.Console.ConsoleInstance.Background._visible", false)
+            UI.SetString("Console", "_global.Console.ConsoleInstance.CommandEntry.text", "The Console is Currently Disabled")
         endIf
     endIf
 endEvent
